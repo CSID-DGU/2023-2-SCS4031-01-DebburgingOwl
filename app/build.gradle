@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.logintest'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.logintest"
@@ -40,7 +40,6 @@ dependencies {
     //firebase
     implementation platform("com.google.firebase:firebase-bom:32.3.1")
     implementation("com.google.firebase:firebase-auth")
-    implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation 'com.google.android.material:material:1.10.0'
 
 }
