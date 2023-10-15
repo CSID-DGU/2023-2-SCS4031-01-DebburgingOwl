@@ -16,13 +16,12 @@
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"/>
 
-    <EditText
-        android:id="@+id/editTextInput"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="랜덤한 명언"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"/>
 
     <ImageView
         android:id="@+id/imagePlaceholder"
