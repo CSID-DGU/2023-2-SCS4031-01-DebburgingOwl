@@ -1,47 +1,59 @@
 package com.example.logintest;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import com.bumptech.glide.RequestManager;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
-    private Context mContext;
-    private List<Integer> imageList; // 이미지 리소스 ID의 목록
 
-    public ImageAdapter(Context context, List<Integer> images) {
-        mContext = context;
-        imageList = images;
+    private Context context;
+    private ArrayList<String> images;
+    private RequestManager glide;
+
+    public ImageAdapter(Context context, RequestManager glide) {
+        this.context = context;
+        this.images = new ArrayList<>();
+        this.glide = glide;
     }
 
+    public void add(String image) {
+        images.add(image);
+    }
+
+    public void clear() {
+        images.clear();
+    }
+
+    @Override
     public int getCount() {
-        return imageList.size();
+        return images.size();
     }
 
+    @Override
     public Object getItem(int position) {
-        return null;
+        return images.get(position);
     }
 
+    @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
-    // 이미지를 표시하는 데 사용되는 뷰를 생성
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
         if (convertView == null) {
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, GridView.LayoutParams.MATCH_PARENT));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
+            convertView = LayoutInflater.from(context).inflate(R.layout.grid_item, parent, false);
         }
-        imageView.setImageResource(imageList.get(position));
-        return imageView;
+
+        ImageView imageView = convertView.findViewById(R.id.imageView);
+        glide.load(images.get(position)).into(imageView);
+
+        return convertView;
     }
 }

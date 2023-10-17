@@ -64,9 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                             // 로그인 성공
                             Intent moveToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
                             Toast.makeText(LoginActivity.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
-                            // TODO: 메인 액티비티로 이동하는 코드를 작성해주세요.
                             // 로그인 성공 후 실행되는 코드 부분
-
                             startActivity(moveToMainActivity);
                             finish();
 

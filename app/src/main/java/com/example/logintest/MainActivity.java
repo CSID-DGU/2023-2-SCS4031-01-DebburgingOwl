@@ -30,9 +30,39 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.home);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(MainActivity.this, BoardActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.community) {
+                intent = new Intent(MainActivity.this, CommunityActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.home) {
+                return true;
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(MainActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.mypage) {
+                intent = new Intent(MainActivity.this, MyPageActivity.class);
+                startActivity(intent);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+
         viewPager = findViewById(R.id.viewPager);
 
         List<String> quotesList = Arrays.asList(
@@ -89,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000); // 2초 동안 대기
     }
+
 
 
 }
