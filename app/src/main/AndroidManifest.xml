@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="true" />
+
 
     <application
         android:allowBackup="true"
@@ -25,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".CommunityActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +40,7 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".CommunityActivity"
             android:exported="false">
         </activity>
 
@@ -51,7 +53,10 @@
             android:name=".MyPageActivity"
             android:exported="false">
         </activity>
+        <activity android:name=".ExerciseActivity"
+            android:exported="false">
 
+        </activity>
 
     </application>
 
