@@ -39,9 +39,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     //firebase
     implementation platform("com.google.firebase:firebase-bom:32.3.1")
-    implementation("com.google.firebase:firebase-auth")
+    implementation 'com.google.firebase:firebase-auth:22.1.2' // 버전은 최신으로 확인해주세요.
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
-
+    implementation 'com.google.firebase:firebase-database' // Realtime Database
+    implementation 'com.google.firebase:firebase-storage' // Firebase Storage
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0' // Glide for image loading
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
+apply plugin: 'com.google.gms.google-services' // Add this line at the bottom

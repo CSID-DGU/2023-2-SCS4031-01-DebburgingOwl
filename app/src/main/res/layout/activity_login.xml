@@ -2,37 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="32dp">
 
     <EditText
-        android:id="@+id/editTextEmailLogin"
+        android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="Email" />
 
     <EditText
-        android:id="@+id/editTextPasswordLogin"
+        android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="16dp"/>
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="24dp"/>
 
     <Button
-        android:id="@+id/buttonGoToRegister"
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to Register"
-        android:layout_marginTop="8dp" />
+        android:text="Register"
+        android:layout_marginTop="16dp"/>
 
 </LinearLayout>

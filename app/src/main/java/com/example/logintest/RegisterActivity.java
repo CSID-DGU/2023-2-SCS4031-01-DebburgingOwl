@@ -39,7 +39,27 @@ public class RegisterActivity extends Activity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        // TODO: 입력값 유효성 검사 필요
+        // 이름 유효성 검사
+        if (name.isEmpty() || name.length() < 2 || name.length() > 30) {
+            editTextName.setError("Please enter a valid name (2~30 characters)");
+            editTextName.requestFocus();
+            return;
+        }
+
+        // 이메일 유효성 검사
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Please enter a valid email");
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        // 비밀번호 유효성 검사
+        if (password.isEmpty() || password.length() < 6) {
+            editTextPassword.setError("Password should be at least 6 characters");
+            editTextPassword.requestFocus();
+            return;
+        }
+
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
