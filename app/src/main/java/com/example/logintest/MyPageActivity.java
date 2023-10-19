@@ -53,5 +53,14 @@ public class MyPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button myPostButton = findViewById(R.id.myPostBtn);
+        myPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyPageActivity.this, MyPostActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
