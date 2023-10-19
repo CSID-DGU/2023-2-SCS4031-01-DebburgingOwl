@@ -15,36 +15,6 @@ public class MyPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Intent intent;
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.board) {
-                intent = new Intent(MyPageActivity.this, BoardActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.community) {
-                intent = new Intent(MyPageActivity.this, CommunityActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.home) {
-                return true;
-            } else if (itemId == R.id.daily_mission) {
-                intent = new Intent(MyPageActivity.this, DailyMissionActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.mypage) {
-                intent = new Intent(MyPageActivity.this, MyPageActivity.class);
-                startActivity(intent);
-                return true;
-            } else {
-                return false;
-            }
-        });
-
         Button myPageEditButton = findViewById(R.id.myPageEditBtn);
         myPageEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +29,15 @@ public class MyPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyPageActivity.this, MyPostActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button myBookmarkButton = findViewById(R.id.myBookmarkBtn);
+        myBookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyPageActivity.this, MyBookmarkActivity.class);
                 startActivity(intent);
             }
         });
