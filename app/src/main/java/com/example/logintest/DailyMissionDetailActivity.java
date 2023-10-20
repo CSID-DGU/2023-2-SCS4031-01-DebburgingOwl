@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 public class DailyMissionDetailActivity extends AppCompatActivity {
 
+    TextView missionDay = (TextView) findViewById(R.id.missionDay);
     TextView missionName = (TextView) findViewById(R.id.missionName);
     TextView missionContent = (TextView) findViewById(R.id.missionContent);
     Button missionConfirmBtn = (Button) findViewById(R.id.missionConfirmBtn);
