@@ -10,12 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MyPageActivity extends AppCompatActivity {
+
+    Button myPageEditButton;
+    Button myPostButton;
+    Button myBookmarkButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
 
-        Button myPageEditButton = findViewById(R.id.myPageEditBtn);
+        myPageEditButton = findViewById(R.id.myPageEditBtn);
         myPageEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -24,7 +29,7 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
 
-        Button myPostButton = findViewById(R.id.myPostBtn);
+        myPostButton = findViewById(R.id.myPostBtn);
         myPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +38,7 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
 
-        Button myBookmarkButton = findViewById(R.id.myBookmarkBtn);
+        myBookmarkButton = findViewById(R.id.myBookmarkBtn);
         myBookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
