@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="true" />
-
+    <uses-feature
+        android:name="android.hardware.sensor.stepcounter"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -18,46 +21,44 @@
         android:theme="@style/Theme.Logintest"
         tools:targetApi="31">
         <activity
+            android:name=".MyBookmarkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyPageEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".BoardActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".CommunityActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".DailyMissionActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".MyPageActivity"
-            android:exported="false">
-        </activity>
-        <activity android:name=".ExerciseActivity"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false" />
+        <activity
+            android:name=".ExerciseActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
