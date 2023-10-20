@@ -13,7 +13,7 @@
         android:gravity="center"
         android:text="북마크한 게시물"
         android:textSize="25dp"
-        android:padding="20dp"/>
+        android:padding="15dp"/>
 
     <GridView
         android:id="@+id/bookmarkGridView"
