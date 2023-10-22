@@ -104,6 +104,8 @@ public class CoffeeMissionActivity extends AppCompatActivity {
         }
     }
 
+    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노", "라떼", "카푸치노", "모카", "에스프레소", "한우샤브")); // 커피 메뉴 리스트 준비
+
     private void recognizeTextFromImage(InputImage image) {
         TextRecognizer recognizer =
                 TextRecognition.getClient(new KoreanTextRecognizerOptions.Builder().build());
@@ -113,8 +115,36 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(@NonNull Text result) {
                         String resultText = result.getText();
+                        String matchedMenu = null;
+                        String date = null;
+
+
+                        // 날짜 추출
+                        Pattern datePattern = Pattern.compile("\\b\\d{4}[-/]\\d{2}[-/]\\d{2}\\b");
+                        Matcher dateMatcher = datePattern.matcher(resultText);
+                        if (dateMatcher.find()) {
+                            date = dateMatcher.group();
+                            // date 변수에 날짜가 저장됩니다.
+                        }
+
+                        // 한글 메뉴 이름 추출 및 비교
+                        Pattern menuPattern = Pattern.compile("[가-힣]+");
+                        Matcher menuMatcher = menuPattern.matcher(resultText);
+                        while (menuMatcher.find()) {
+                            String menuItem = menuMatcher.group();
+                            if (coffeeMenu.contains(menuItem)) {
+                                matchedMenu = menuItem; // 일치하는 메뉴를 찾았으므로 변수에 저장
+                                break; // 일치하는 메뉴를 찾았으므로 더 이상 반복할 필요가 없습니다.
+                            }
+                        }
+
+                        // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
-                        resultTextView.setText(resultText);
+                        if (matchedMenu != null) {
+                            resultTextView.setText("Date: " + date + "\nMenu: " + matchedMenu);
+                        } else {
+                            resultTextView.setText("메뉴를 찾을 수 없습니다.");
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -124,4 +154,5 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
