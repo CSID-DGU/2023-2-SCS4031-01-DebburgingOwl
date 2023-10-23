@@ -43,7 +43,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".CoffeeMissionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,13 +51,15 @@
             </intent-filter>
         </activity>
 
-        <!-- 여러분의 다른 액티비티들도 여기에 나열됩니다 -->
+        <!-- 추가할 엑티비티 -->
 
         <activity android:name=".WorkoutActivity" android:exported="false" />
         <activity android:name=".BoardActivity" android:exported="false"/>
         <activity android:name=".CommunityActivity" android:exported="false"/>
         <activity android:name=".DailyMissionActivity" android:exported="false"/>
         <activity android:name=".MyPageActivity" android:exported="false"/>
+        <activity android:name=".LoginActivity" android:exported="false"/>
+
 
     </application>
 
