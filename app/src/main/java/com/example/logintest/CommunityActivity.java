@@ -1,6 +1,7 @@
 package com.example.logintest;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,8 +15,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.ByteArrayOutputStream;
+import android.content.ContentValues;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import java.io.OutputStream;
+import java.io.IOException;
 
 public class CommunityActivity extends AppCompatActivity {
 
@@ -58,11 +63,23 @@ public class CommunityActivity extends AppCompatActivity {
     }
 
     private Uri getImageUri(Bitmap bitmap) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
-        return Uri.parse(path);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Title");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        try {
+            OutputStream outputStream = getContentResolver().openOutputStream(uri);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return uri;
     }
+
 
 
     private void uploadImage() {
