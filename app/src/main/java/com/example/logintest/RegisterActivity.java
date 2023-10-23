@@ -9,10 +9,14 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.example.logintest.User;
 
 public class RegisterActivity extends Activity {
     private EditText editTextName, editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,8 @@ public class RegisterActivity extends Activity {
         Button buttonRegister = findViewById(R.id.buttonRegister);
 
         mAuth = FirebaseAuth.getInstance();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference(); // Firebase Database 초기화
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +77,11 @@ public class RegisterActivity extends Activity {
                             user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
+                                            // Firebase Database에 데이터 추가
+                                            String userId = user.getUid();
+                                            User userData = new User(name, email); // User 클래스는 데이터를 저장하는 클래스입니다.
+                                            databaseReference.child("users").child(userId).setValue(userData);
+
                                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
