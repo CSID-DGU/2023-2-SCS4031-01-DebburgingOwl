@@ -7,8 +7,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
@@ -26,30 +24,40 @@
         android:theme="@style/Theme.Logintest"
         tools:targetApi="31">
 
-        <!-- 여러분의 액티비티들이 여기에 나열됩니다 -->
-
         <activity
-            android:name=".CoffeeMissionActivity"
+            android:name=".DailyMissionDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyBookmarkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyPageEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!-- 여러분의 다른 액티비티들도 여기에 나열됩니다 -->
 
-        <activity android:name=".MyBookmarkActivity" android:exported="false"/>
-        <activity android:name=".MyPostActivity" android:exported="false"/>
-        <activity android:name=".MyPageEditActivity" android:exported="false"/>
-        <activity android:name=".RegisterActivity" android:exported="false"/>
-        <activity android:name=".MainActivity" android:exported="false"/>
-        <activity android:name=".LoginActivity" android:exported="false"/>
         <activity android:name=".WorkoutActivity" android:exported="false" />
         <activity android:name=".BoardActivity" android:exported="false"/>
         <activity android:name=".CommunityActivity" android:exported="false"/>
         <activity android:name=".DailyMissionActivity" android:exported="false"/>
         <activity android:name=".MyPageActivity" android:exported="false"/>
-
 
     </application>
 
