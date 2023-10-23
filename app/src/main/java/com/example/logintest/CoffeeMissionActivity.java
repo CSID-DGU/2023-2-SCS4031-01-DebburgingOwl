@@ -153,11 +153,12 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                                 resultTextView.setText("주문하신" + matchedMenu + "맛있게 드세요!" );
 
 
+
                             } else {
                                 resultTextView.setText("메뉴를 찾을 수 없습니다.");
                             }
                         } else {
-                            resultTextView.setText("날짜가 일치하지 않습니다.");
+                            resultTextView.setText("오늘 찍은 영수증이 맞는지 다시 한 번 학인해주세요!");
                         }
                     }
                 })
