@@ -21,6 +21,9 @@
         android:theme="@style/Theme.Logintest"
         tools:targetApi="31">
         <activity
+            android:name=".DailyMissionDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".MyBookmarkActivity"
             android:exported="false" />
         <activity
