@@ -30,4 +30,5 @@
         android:layout_gravity="center"
         android:text="인증하기" />
 
+
 </LinearLayout>
