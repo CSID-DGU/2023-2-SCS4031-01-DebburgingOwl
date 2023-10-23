@@ -43,7 +43,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".CoffeeMissionActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +58,7 @@
         <activity android:name=".CommunityActivity" android:exported="false"/>
         <activity android:name=".DailyMissionActivity" android:exported="false"/>
         <activity android:name=".MyPageActivity" android:exported="false"/>
-        <activity android:name=".LoginActivity" android:exported="false"/>
+        <activity android:name=".CoffeeMissionActivity" android:exported="false"/>
 
 
     </application>

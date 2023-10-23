@@ -108,7 +108,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
         }
     }
 
-    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노", "라떼", "카푸치노", "모카", "에스프레소", "한우샤브")); // 커피 메뉴 리스트 준비
+    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노","아이스아메리카노", "라떼", "카푸치노", "모카", "에스프레소")); // 커피 메뉴 리스트 준비
 
     private void recognizeTextFromImage(InputImage image) {
         TextRecognizer recognizer =
@@ -151,6 +151,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
 
                             if (matchedMenu != null) {
                                 resultTextView.setText("주문하신" + matchedMenu + "맛있게 드세요!" );
+                                Toast.makeText(getApplicationContext(), "미션 성공!!", Toast.LENGTH_SHORT).show();
 
 
 
