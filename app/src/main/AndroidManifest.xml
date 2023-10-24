@@ -62,7 +62,6 @@
         <activity android:name=".MyPageActivity" android:exported="false"/>
         <activity android:name=".WorkoutActivity" android:exported="false"/>
 
-
     </application>
 
 </manifest>
