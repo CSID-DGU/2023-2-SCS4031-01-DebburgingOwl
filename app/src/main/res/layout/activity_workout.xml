@@ -1,39 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="32dp"
     tools:context=".WorkoutActivity">
 
-    <TextView
-        android:id="@+id/stepCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Steps: 0"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:paddingBottom="24dp" />
-
-    <ProgressBar
-        android:id="@+id/stepProgressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="1000" />
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:menu="@menu/bottom_navigation_menu" />
 
-    <Button
-        android:id="@+id/missionCompleteButton"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="미션 완료"
-        android:enabled="false"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/design_default_color_primary"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_above="@id/bottomNavigationView"
+        android:orientation="vertical"
+        android:padding="32dp">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/stepCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘 0보 걸었어요!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="24dp" />
+
+        <ProgressBar
+            android:id="@+id/stepProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="1000" />
+
+        <Button
+            android:id="@+id/missionCompleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="미션 완료"
+            android:enabled="true"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/design_default_color_primary"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btnIncreaseSteps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="센서 테스트용버튼"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>
