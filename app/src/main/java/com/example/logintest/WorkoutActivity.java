@@ -26,21 +26,45 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+        Button btnIncreaseSteps = findViewById(R.id.btnIncreaseSteps);
 
         stepCounterTextView = findViewById(R.id.stepCounter);
+
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
         stepProgressBar = findViewById(R.id.stepProgressBar);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        btnIncreaseSteps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                steps += 10; // 스텝을 10씩 증가
+                updateStepCounter(); // 스텝 업데이트 메서드 호출
+            }
+        });
+
         missionCompleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(WorkoutActivity.this, "미션 완료", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                if (steps >= 1000) {
+                    Toast.makeText(WorkoutActivity.this, "미션 완료", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(WorkoutActivity.this, "아직 " + (1000 - steps) + " 걸음이 부족해요!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
+    }
+
+    private void updateStepCounter() {
+        stepCounterTextView.setText("오늘 " + steps + "보 걸었어요!");
+        stepProgressBar.setProgress(steps);
+        if (steps >= 1000) {
+            missionCompleteButton.setEnabled(true);
+        }
     }
 
     @Override
@@ -60,17 +84,19 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        steps = (int) event.values[0] + 1000;
+        steps = (int) event.values[0];
         stepCounterTextView.setText("Steps: " + steps);
         stepProgressBar.setProgress(steps);
-        if (steps >= 1000) {
-            missionCompleteButton.setEnabled(true);
-
-        }
+//        if (steps >= 1000) {
+//            missionCompleteButton.setEnabled(true);
+//
+//        }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // 필요한 경우 여기에 코드를 추가합니다.
     }
 }
+

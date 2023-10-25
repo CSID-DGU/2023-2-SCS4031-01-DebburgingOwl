@@ -24,20 +24,12 @@
         android:background="@drawable/mission_color_background">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="20dp"
-            android:text="미션 설명"
-            android:textColor="#ffffff"/>
-
-        <TextView
             android:id="@+id/missionContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="20dp"
-            android:text="미션 설명 내용"
+            android:text="영수증의 날짜와 메뉴가 잘 나오는지 확인해 주세요!"
             android:textColor="#ffffff"/>
 
     </LinearLayout>
@@ -71,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="20dp"
-            android:text="미션 이름" />
+            android:text="커피 한 잔 할래요?" />
 
     </LinearLayout>
 
@@ -80,7 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="인증하기" />
+        android:text="인증하기"
+        android:background="@drawable/mission_color_background" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

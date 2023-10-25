@@ -42,9 +42,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+            <!--이 자바파일 이름이 앱실행시 처음 나오는 화면입니다.-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,13 +55,12 @@
 
         <!-- 추가할 엑티비티 -->
 
-        <activity android:name=".WorkoutActivity" android:exported="false" />
+        <activity android:name=".CoffeeMissionActivity" android:exported="false" />
         <activity android:name=".BoardActivity" android:exported="false"/>
         <activity android:name=".CommunityActivity" android:exported="false"/>
         <activity android:name=".DailyMissionActivity" android:exported="false"/>
         <activity android:name=".MyPageActivity" android:exported="false"/>
-        <activity android:name=".CoffeeMissionActivity" android:exported="false"/>
-
+        <activity android:name=".WorkoutActivity" android:exported="false"/>
 
     </application>
 
