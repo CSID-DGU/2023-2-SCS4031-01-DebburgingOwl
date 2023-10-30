@@ -15,12 +15,11 @@
         android:textSize="25dp"
         android:padding="15dp"/>
 
-    <GridView
+    <ListView
         android:id="@+id/bookmarkGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/myBookmark"
-        android:numColumns="1"
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
         android:padding="10dp" />
