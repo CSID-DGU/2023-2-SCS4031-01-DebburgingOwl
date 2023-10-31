@@ -1,11 +1,13 @@
 package com.example.logintest;
+
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -14,9 +16,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.example.logintest.User;
 
 public class RegisterActivity extends Activity {
-    private EditText editTextName, editTextEmail, editTextPassword;
+    private EditText editTextName, editTextEmail, editTextPassword, editTextNickname;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private Button buttonRegister, buttonUploadImage;
+    private Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +30,12 @@ public class RegisterActivity extends Activity {
         editTextName = findViewById(R.id.editTextNameRegister);
         editTextEmail = findViewById(R.id.editTextEmailRegister);
         editTextPassword = findViewById(R.id.editTextPasswordRegister);
-        Button buttonRegister = findViewById(R.id.buttonRegister);
+        editTextNickname = findViewById(R.id.editTextNicknameRegister); // 닉네임 EditText 추가
+        buttonRegister = findViewById(R.id.buttonRegister);
 
         mAuth = FirebaseAuth.getInstance();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(); // Firebase Database 초기화
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,28 +49,31 @@ public class RegisterActivity extends Activity {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String nickname = editTextNickname.getText().toString().trim();
 
-        // 이름 유효성 검사
         if (name.isEmpty() || name.length() < 2 || name.length() > 30) {
             editTextName.setError("Please enter a valid name (2~30 characters)");
             editTextName.requestFocus();
             return;
         }
 
-        // 이메일 유효성 검사
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please enter a valid email");
             editTextEmail.requestFocus();
             return;
         }
 
-        // 비밀번호 유효성 검사
         if (password.isEmpty() || password.length() < 6) {
             editTextPassword.setError("Password should be at least 6 characters");
             editTextPassword.requestFocus();
             return;
         }
 
+        if (nickname.isEmpty() || nickname.length() < 2 || nickname.length() > 30) {
+            editTextNickname.setError("Please enter a valid nickname (2~30 characters)");
+            editTextNickname.requestFocus();
+            return;
+        }
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
@@ -77,12 +85,13 @@ public class RegisterActivity extends Activity {
                             user.updateProfile(profileUpdates)
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
-                                            // Firebase Database에 데이터 추가
                                             String userId = user.getUid();
-                                            User userData = new User(name, email); // User 클래스는 데이터를 저장하는 클래스입니다.
+                                            User userData = new User(name, email, nickname);
                                             databaseReference.child("users").child(userId).setValue(userData);
-
                                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(RegisterActivity.this, MyPageActivity.class);
+                                            intent.putExtra("nickname", nickname);
+                                            startActivity(intent);
                                             finish();
                                         }
                                     });
