@@ -1,5 +1,7 @@
 package com.example.logintest;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +15,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.logintest.User;
 
+import java.text.BreakIterator;
+
 public class RegisterActivity extends Activity {
-    private EditText editTextName, editTextEmail, editTextPassword;
+    private EditText editTextName, editTextEmail, editTextPassword, editTextNickname;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private Button buttonRegister, buttonUploadImage;
+    private Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,7 @@ public class RegisterActivity extends Activity {
         editTextName = findViewById(R.id.editTextNameRegister);
         editTextEmail = findViewById(R.id.editTextEmailRegister);
         editTextPassword = findViewById(R.id.editTextPasswordRegister);
+        editTextNickname = findViewById(R.id.editTextNicknameRegister);
         Button buttonRegister = findViewById(R.id.buttonRegister);
 
         mAuth = FirebaseAuth.getInstance();
@@ -44,6 +51,8 @@ public class RegisterActivity extends Activity {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String nickname = editTextNickname.getText().toString().trim();
+
 
         // 이름 유효성 검사
         if (name.isEmpty() || name.length() < 2 || name.length() > 30) {
@@ -66,6 +75,13 @@ public class RegisterActivity extends Activity {
             return;
         }
 
+        // 닉네임 유효성 검사
+        if (nickname.isEmpty() || nickname.length() < 2 || nickname.length() > 30) {
+            editTextNickname.setError("Please enter a valid nickname (2~30 characters)");
+            editTextNickname.requestFocus();
+            return;
+        }
+
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
@@ -79,10 +95,13 @@ public class RegisterActivity extends Activity {
                                         if (task1.isSuccessful()) {
                                             // Firebase Database에 데이터 추가
                                             String userId = user.getUid();
-                                            User userData = new User(name, email); // User 클래스는 데이터를 저장하는 클래스입니다.
+                                            User userData = new User(name, email, nickname);
                                             databaseReference.child("users").child(userId).setValue(userData);
 
                                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(RegisterActivity.this, MyPageActivity.class);
+                                            intent.putExtra("nickname", nickname);
+                                            startActivity(intent);
                                             finish();
                                         }
                                     });
