@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.logintest.User;
 
+import java.text.BreakIterator;
+
 public class RegisterActivity extends Activity {
     private EditText editTextName, editTextEmail, editTextPassword, editTextNickname;
     private FirebaseAuth mAuth;
@@ -30,8 +32,9 @@ public class RegisterActivity extends Activity {
         editTextName = findViewById(R.id.editTextNameRegister);
         editTextEmail = findViewById(R.id.editTextEmailRegister);
         editTextPassword = findViewById(R.id.editTextPasswordRegister);
-        editTextNickname = findViewById(R.id.editTextNicknameRegister); // 닉네임 EditText 추가
-        buttonRegister = findViewById(R.id.buttonRegister);
+        editTextNickname = findViewById(R.id.editTextNicknameRegister);
+        Button buttonRegister = findViewById(R.id.buttonRegister);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -69,11 +72,13 @@ public class RegisterActivity extends Activity {
             return;
         }
 
+
         if (nickname.isEmpty() || nickname.length() < 2 || nickname.length() > 30) {
             editTextNickname.setError("Please enter a valid nickname (2~30 characters)");
             editTextNickname.requestFocus();
             return;
         }
+
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
