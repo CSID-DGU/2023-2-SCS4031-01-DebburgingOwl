@@ -15,6 +15,7 @@ public class MyPageActivity extends AppCompatActivity {
     Button myPostButton;
     Button myBookmarkButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
