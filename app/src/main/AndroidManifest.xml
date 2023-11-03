@@ -24,6 +24,12 @@
         android:theme="@style/Theme.Logintest"
         tools:targetApi="31">
         <activity
+            android:name=".NoticeBoardDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InformationBoardDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".PodcastDetailActivity"
             android:exported="false" />
         <activity
