@@ -17,7 +17,7 @@
     <ListView
         android:id="@+id/informationListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="545dp"
         android:layout_below="@+id/search_view"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"/>
@@ -29,7 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="85dp"
+        android:layout_marginBottom="120dp"
         android:contentDescription="게시글 업로드"
         android:src="@android:drawable/ic_menu_upload"
         app:backgroundTint="#609966" />

@@ -1,64 +1,120 @@
 package com.example.logintest;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NoticeBoardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 public class NoticeBoardFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    ListView listView;
+    SearchView searchView;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // 레이아웃을 inflate하고 그 결과를 view 변수에 저장
+        View view = inflater.inflate(R.layout.fragment_notice_board, container, false);
 
-    public NoticeBoardFragment() {
-        // Required empty public constructor
+        // 게시글 데이터를 임의로 생성
+        List<String> postList = new ArrayList<>();
+        postList.add("공지 게시글 1");
+        postList.add("공지 게시글 2");
+        postList.add("공지 게시글 3");
+        postList.add("공지 게시글 4");
+        postList.add("공지 게시글 5");
+        postList.add("나의 게시글 1");
+        postList.add("나의 게시글 2");
+        postList.add("나의 게시글 3");
+
+        // ArrayAdapter를 생성하고 리스트뷰에 설정
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, postList);
+        listView = view.findViewById(R.id.informationListView);
+        listView.setAdapter(adapter);
+
+        // SearchView에 검색 이벤트 리스너 추가
+        searchView = view.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // 검색어를 제출했을 때의 동작
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // 검색어가 변경될 때마다 호출
+                // 어댑터의 getFilter().filter(newText)를 호출하여 리스트를 필터링하고 업데이트
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        return view;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoticeBoardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NoticeBoardFragment newInstance(String param1, String param2) {
-        NoticeBoardFragment fragment = new NoticeBoardFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public class InformationAdapter extends ArrayAdapter<String> {
+        private List<String> originalData;
+        private List<String> filteredData;
+        private LayoutInflater inflater;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        public InformationAdapter(Context context, List<String> data) {
+            super(context, android.R.layout.simple_list_item_1, data);
+            this.originalData = new ArrayList<>(data);
+            this.filteredData = new ArrayList<>(data);
+            this.inflater = LayoutInflater.from(context);
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notice_board, container, false);
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            }
+
+            // 게시글 텍스트를 가져와서 설정
+            String item = getItem(position);
+            TextView textView = view.findViewById(android.R.id.text1);
+            textView.setText(item);
+
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return filteredData.size();
+        }
+
+        @Override
+        public String getItem(int position) {
+            return filteredData.get(position);
+        }
+
+        public void filter(String query) {
+            filteredData.clear();
+            query = query.toLowerCase(Locale.getDefault());
+
+            if (query.length() == 0) {
+                filteredData.addAll(originalData);
+            } else {
+                for (String item : originalData) {
+                    if (item.toLowerCase(Locale.getDefault()).contains(query)) {
+                        filteredData.add(item);
+                    }
+                }
+            }
+
+            notifyDataSetChanged();
+        }
     }
 }

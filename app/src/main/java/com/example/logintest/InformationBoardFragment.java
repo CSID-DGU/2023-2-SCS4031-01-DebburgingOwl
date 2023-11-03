@@ -20,6 +20,8 @@ import java.util.List;
 public class InformationBoardFragment extends Fragment {
 
     FloatingActionButton uploadBtn;
+    ListView listView;
+    SearchView searchView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,11 +42,11 @@ public class InformationBoardFragment extends Fragment {
 
         // ArrayAdapter를 생성하고 리스트뷰에 설정
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, postList);
-        ListView listView = rootView.findViewById(R.id.informationListView);
+        listView = rootView.findViewById(R.id.informationListView);
         listView.setAdapter(adapter);
 
         // SearchView에 검색 이벤트 리스너 추가
-        SearchView searchView = rootView.findViewById(R.id.search_view);
+        searchView = rootView.findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
