@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PodcastDetailActivity">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="팟캐스트"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:padding="15dp"/>
+
+    <WebView
+        android:id="@+id/podcastDetailBtn"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#E0E0E0"
+        android:contentDescription="@string/app_name"
+        android:src="@android:drawable/ic_media_play" />
+
+    <TextView
+        android:id="@+id/podcastDayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/podcastDetailBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="2023년 10월 15일 팟캐스트"/>
+
+    <Button
+        android:id="@+id/podcastBackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:text="팟캐스트 게시판" />
+
+</RelativeLayout>
