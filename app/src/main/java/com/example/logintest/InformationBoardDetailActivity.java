@@ -2,6 +2,7 @@ package com.example.logintest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -67,6 +68,8 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.board) {
+                intent = new Intent(InformationBoardDetailActivity.this, BoardActivity.class);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.community) {
                 intent = new Intent(InformationBoardDetailActivity.this, CommunityActivity.class);

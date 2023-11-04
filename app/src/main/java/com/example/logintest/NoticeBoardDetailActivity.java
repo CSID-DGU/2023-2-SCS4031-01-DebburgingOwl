@@ -43,6 +43,8 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.board) {
+                intent = new Intent(NoticeBoardDetailActivity.this, BoardActivity.class);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.community) {
                 intent = new Intent(NoticeBoardDetailActivity.this, CommunityActivity.class);
