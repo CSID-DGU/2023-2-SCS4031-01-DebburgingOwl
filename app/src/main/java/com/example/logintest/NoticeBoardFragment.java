@@ -1,6 +1,7 @@
 package com.example.logintest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.SearchView;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,6 +59,21 @@ public class NoticeBoardFragment extends Fragment {
                 // 어댑터의 getFilter().filter(newText)를 호출하여 리스트를 필터링하고 업데이트
                 adapter.getFilter().filter(newText);
                 return true;
+            }
+        });
+
+        // 클릭 이벤트 처리 부분 추가
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // 리스트 아이템이 클릭되면 해당 포지션의 데이터 가져오기
+                String selectedItem = (String) parent.getItemAtPosition(position);
+
+                // 클릭된 아이템에 대한 추가 작업 수행
+                // 예를 들면, 선택된 아이템을 다음 액티비티로 전달하여 보여주기
+                Intent intent = new Intent(getActivity(), NoticeBoardDetailActivity.class);
+                intent.putExtra("selectedItem", selectedItem);
+                startActivity(intent);
             }
         });
 
