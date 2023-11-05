@@ -4,12 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MyPageActivity extends AppCompatActivity {
+    private TextView gradeTextView;
+    private TextView nickname;
+    private TextView point;
+    private TextView people;
+    private TextView userType;
+    private DatabaseReference userRef;
 
     Button myPageEditButton;
     Button myPostButton;
@@ -20,8 +36,48 @@ public class MyPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
-
+        gradeTextView = findViewById(R.id.myPage_grade);
+        nickname = findViewById(R.id.myPage_nickname);
+        point = findViewById(R.id.myPage_point);
+        people = findViewById(R.id.myPage_people);
         myPageEditButton = findViewById(R.id.myPageEditBtn);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+
+            // Firebase Realtime Database에서 사용자의 데이터 참조를 가져옴
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+            // 데이터 변화를 실시간으로 감지할 리스너 추가
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // dataSnapshot을 User 객체로 변환
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+
+                        gradeTextView.setText(user.getLevel() + " star");
+                        nickname.setText(user.getNickname());
+                        point.setText(user.getPoint()+ " point");
+                        people.setText(user.getLikeCount()+" 명");
+                        //todo 여기에 모든 정보 표시
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // 에러가 발생한 경우, 유저에게 알림
+                    Toast.makeText(MyPageActivity.this, "데이터 로드 실패: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // 사용자가 로그인하지 않았다면 로그인 화면으로 이동하거나 다른 적절한 조치를 취함
+            // 예를 들어 LoginActivity로 이동하는 코드를 작성할 수 있음
+            Intent moveTologinActivity = new Intent(MyPageActivity.this, LoginActivity.class);
+            startActivity(moveTologinActivity);
+        }
+
         myPageEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

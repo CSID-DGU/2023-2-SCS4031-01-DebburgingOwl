@@ -192,30 +192,38 @@ public class CoffeeMissionActivity extends AppCompatActivity {
     //경험치 올리는 메서드
     private void updateExp(String userId, int additionalExp) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userExpRef = databaseReference.child("users").child(userId).child("exp");
+        DatabaseReference userRef = databaseReference.child("users").child(userId);
 
-        userExpRef.runTransaction(new Transaction.Handler() {
+        userRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Integer currentExp = mutableData.getValue(Integer.class);
-                if (currentExp == null) {
+                User user = mutableData.getValue(User.class);
+                if (user == null) {
                     return Transaction.success(mutableData);
                 }
 
-                mutableData.setValue(currentExp + additionalExp);
+                // 사용자의 현재 경험치를 추가합니다.
+                user.setExp(user.getExp() + additionalExp);
+
+                // 레벨을 업데이트합니다.
+                user.updateLevel();
+
+                // 변경된 사용자 객체를 데이터베이스에 다시 씁니다.
+                mutableData.setValue(user);
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
                 if (committed) {
-                    Toast.makeText(CoffeeMissionActivity.this, "경험치가 업데이트되었습니다!", Toast.LENGTH_SHORT).show();
+                    // 트랜잭션이 성공적으로 커밋되었습니다. UI를 업데이트하거나 사용자에게 알림을 줄 수 있습니다.
+                    Toast.makeText(CoffeeMissionActivity.this, "경험치 및 레벨이 업데이트되었습니다!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(CoffeeMissionActivity.this, "경험치 업데이트에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    // 트랜잭션이 실패했습니다.
+                    Toast.makeText(CoffeeMissionActivity.this, "경험치 및 레벨 업데이트에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
 
 }
