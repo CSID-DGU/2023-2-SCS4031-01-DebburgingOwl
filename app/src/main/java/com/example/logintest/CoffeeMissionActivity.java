@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -55,6 +56,38 @@ public class CoffeeMissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectImage();
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.daily_mission);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(CoffeeMissionActivity.this, BoardActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.community) {
+                intent = new Intent(CoffeeMissionActivity.this, CommunityActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.home) {
+                intent = new Intent(CoffeeMissionActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(CoffeeMissionActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.mypage) {
+                intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
+                startActivity(intent);
+                return true;
+            } else {
+                return false;
             }
         });
     }
