@@ -11,6 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name" />
+    <EditText
+        android:id="@+id/editTextNicknameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="닉네임" />
 
     <EditText
         android:id="@+id/editTextEmailRegister"
@@ -18,14 +23,6 @@
         android:layout_height="wrap_content"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:id="@+id/editTextNicknameRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nickname"
-        android:inputType="text"
         android:layout_marginTop="8dp" />
 
     <EditText
