@@ -13,6 +13,17 @@ public class User {
     private int exp;
     private ArrayList<Integer> levelThresholds;
 
+    public User() {
+        this.name = "";
+        this.email = "";
+        this.nickname = "";
+        this.profileImageUrl = "";
+        this.postCount = 0;
+        this.likeCount = 0;
+        this.exp = 0;
+        this.levelThresholds = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+    }
+
     public User(String name, String email, String nickname) {
         this.name = name;
         this.email = email;
