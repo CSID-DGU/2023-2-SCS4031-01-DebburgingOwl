@@ -20,96 +20,6 @@
             android:layout_marginBottom="10dp"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_margin="15dp"
-            android:background="@drawable/mission_color_background">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingTop="15dp"
-                android:paddingBottom="5dp">
-
-                <TextView
-                    android:id="@+id/missonStamp1"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="1"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginRight="25dp"
-                    android:background="@drawable/mission_stamp_background1"/>
-                <TextView
-                    android:id="@+id/missonStamp2"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="2"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginRight="25dp"
-                    android:background="@drawable/mission_stamp_background1"/>
-                <TextView
-                    android:id="@+id/missonStamp3"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="3"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginRight="25dp"
-                    android:background="@drawable/mission_stamp_background1"/>
-                <TextView
-                    android:id="@+id/missonStamp4"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="4"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:background="@drawable/mission_stamp_background1"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingTop="5dp"
-                android:paddingBottom="15dp">
-
-                <TextView
-                    android:id="@+id/missonStamp5"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="5"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginRight="25dp"
-                    android:background="@drawable/mission_stamp_background1"/>
-                <TextView
-                    android:id="@+id/missonStamp6"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="6"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginRight="25dp"
-                    android:background="@drawable/mission_stamp_background1"/>
-                <TextView
-                    android:id="@+id/missonStamp7"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:text="7"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:background="@drawable/mission_stamp_background1"/>
-            </LinearLayout>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="20dp"
-                android:text="이번 주 미션 완료 시 보상"
+                android:text="미션 완료 시 보상"
                 android:textColor="#ffffff"/>
 
             <TextView
@@ -158,18 +68,18 @@
                 android:layout_marginBottom="10dp">
 
                 <Button
-                    android:id="@+id/btnDay1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 01"
+                    android:id="@+id/missionBtn1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="운동해요"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp"/>
 
                 <Button
-                    android:id="@+id/btnDay2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 02"
+                    android:id="@+id/missionBtn2"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="커피 한 잔 해요"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp" />
 
@@ -182,51 +92,52 @@
                 >
 
                 <Button
-                    android:id="@+id/btnDay3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 03"
+                    android:id="@+id/missionBtn3"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="mission 3"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp"/>
 
                 <Button
-                    android:id="@+id/btnDay4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 04"
+                    android:id="@+id/missionBtn4"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="mission 4"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp" />
 
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="10dp">
 
                 <Button
-                    android:id="@+id/btnDay5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 05"
+                    android:id="@+id/missionBtn5"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="mission 5"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp" />
 
                 <Button
-                    android:id="@+id/btnDay6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:text="Day 06"
+                    android:id="@+id/missionBtn6"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:text="mission 6"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp" />
 
             </LinearLayout>
+
             <Button
-                android:id="@+id/btnDay7"
+                android:id="@+id/missionBtn7"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:text="Day 07" />
+                android:text="mission 7" />
 
         </LinearLayout>
 

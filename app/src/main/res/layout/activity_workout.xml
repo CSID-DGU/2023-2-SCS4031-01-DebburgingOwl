@@ -6,6 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".WorkoutActivity">
 
+    <LinearLayout
+        android:id="@+id/missionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/mission_line_background">
+
+        <TextView
+            android:id="@+id/missionDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:text="미션명" />
+
+        <TextView
+            android:id="@+id/missionName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:text="운동해요" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/missionExplanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/missionTitle"
+        android:background="@drawable/mission_color_background">
+
+        <TextView
+            android:id="@+id/missionContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="목표 걸음 수는 500보 입니다!"
+            android:textSize="15sp"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/missionExplanation"
+        android:gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:background="@drawable/mission_line_background">
+
+        <TextView
+            android:id="@+id/stepCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="오늘 0보 걸었어요!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="24dp"
+            android:layout_marginTop="130dp"/>
+
+        <ProgressBar
+            android:id="@+id/stepProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="1000"
+            android:layout_marginBottom="50dp"/>
+
+        <Button
+            android:id="@+id/missionCompleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="미션 완료"
+            android:enabled="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/design_default_color_primary"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnIncreaseSteps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="센서 테스트용버튼"/>
+
+    </LinearLayout>
+
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -16,49 +122,5 @@
         app:itemIconTint="@color/bottom_nav_item_color"
         app:itemTextColor="@color/bottom_nav_item_color"
         app:menu="@menu/bottom_navigation_menu" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_above="@id/bottomNavigationView"
-        android:orientation="vertical"
-        android:padding="32dp">
-
-        <TextView
-            android:id="@+id/stepCounter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="오늘 0보 걸었어요!"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:paddingBottom="24dp" />
-
-        <ProgressBar
-            android:id="@+id/stepProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="1000" />
-
-        <Button
-            android:id="@+id/missionCompleteButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="미션 완료"
-            android:enabled="true"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/design_default_color_primary"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/btnIncreaseSteps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="센서 테스트용버튼"/>
-
-
-    </LinearLayout>
 
 </RelativeLayout>

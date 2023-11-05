@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ProgressBar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -53,6 +55,38 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                 } else {
                     Toast.makeText(WorkoutActivity.this, "아직 " + (1000 - steps) + " 걸음이 부족해요!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.daily_mission);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(WorkoutActivity.this, BoardActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.community) {
+                intent = new Intent(WorkoutActivity.this, CommunityActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.home) {
+                intent = new Intent(WorkoutActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(WorkoutActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.mypage) {
+                intent = new Intent(WorkoutActivity.this, MyPageActivity.class);
+                startActivity(intent);
+                return true;
+            } else {
+                return false;
             }
         });
 
