@@ -11,6 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name" />
+    <EditText
+        android:id="@+id/editTextNicknameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="닉네임" />
 
     <EditText
         android:id="@+id/editTextEmailRegister"

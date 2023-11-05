@@ -94,7 +94,6 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 갤러리에서 이미지를 선택한 경우
                         image = InputImage.fromFilePath(this, data.getData());
                         recognizeTextFromImage(image);
-
                         receiptImageView.setImageURI(data.getData());
                         break;
 
