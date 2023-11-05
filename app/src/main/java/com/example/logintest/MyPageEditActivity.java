@@ -70,6 +70,39 @@ public class MyPageEditActivity extends AppCompatActivity {
             });
         }
 
+        myPageEditOkBtn.setOnClickListener(v -> {
+            // Get updated information
+            String updatedName = myPageName.getText().toString().trim();
+            String updatedNickname = myPageNickname.getText().toString().trim();
+            String updatedEmail = myPageEmail.getText().toString().trim();
+
+            // Update the information in the database
+            if (user != null) {
+                String userId = user.getUid();
+                databaseReference.child("users").child(userId).child("name").setValue(updatedName);
+                databaseReference.child("users").child(userId).child("nickname").setValue(updatedNickname);
+                databaseReference.child("users").child(userId).child("email").setValue(updatedEmail);
+
+                // Get the updated password
+                String updatedPassword = myPagePassword.getText().toString().trim();
+
+                // Check if the password field is not empty
+                if (!updatedPassword.isEmpty()) {
+                    // Update the password
+                    user.updatePassword(updatedPassword)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MyPageEditActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MyPageEditActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+
+                Toast.makeText(MyPageEditActivity.this, "Information updated successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.mypage);
 
