@@ -14,6 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ProgressBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
@@ -23,6 +30,7 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     private Button missionCompleteButton;
     private ProgressBar stepProgressBar;
     private int steps = 0;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,11 +52,17 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             }
         });
 
+
+
         missionCompleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (steps >= 1000) {
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    updateExp(userId, 100);
+
                     Toast.makeText(WorkoutActivity.this, "미션 완료", Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -132,5 +146,33 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // 필요한 경우 여기에 코드를 추가합니다.
     }
+
+    private void updateExp(String userId, int additionalExp) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userExpRef = databaseReference.child("users").child(userId).child("exp");
+
+        userExpRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentExp = mutableData.getValue(Integer.class);
+                if (currentExp == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                mutableData.setValue(currentExp + additionalExp);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (committed) {
+                    Toast.makeText(WorkoutActivity.this, "경험치가 업데이트되었습니다!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(WorkoutActivity.this, "경험치 업데이트에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 }
 

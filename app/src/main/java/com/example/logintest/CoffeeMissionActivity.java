@@ -17,7 +17,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -58,38 +64,6 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 selectImage();
             }
         });
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.daily_mission);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Intent intent;
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.board) {
-                intent = new Intent(CoffeeMissionActivity.this, BoardActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.community) {
-                intent = new Intent(CoffeeMissionActivity.this, CommunityActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.home) {
-                intent = new Intent(CoffeeMissionActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.daily_mission) {
-                intent = new Intent(CoffeeMissionActivity.this, DailyMissionActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.mypage) {
-                intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
-                startActivity(intent);
-                return true;
-            } else {
-                return false;
-            }
-        });
     }
 
     private void selectImage() {
@@ -127,6 +101,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 갤러리에서 이미지를 선택한 경우
                         image = InputImage.fromFilePath(this, data.getData());
                         recognizeTextFromImage(image);
+
                         receiptImageView.setImageURI(data.getData());
                         break;
 
@@ -177,7 +152,8 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
 
-                        if (date != null){ // && date.equals(currentDate)) {
+                        if (date != null){ // && date.equals(currentDate))//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
+                            // {
                             // 한글 메뉴 이름 추출 및 비교
                             Pattern menuPattern = Pattern.compile("[가-힣]+");
                             Matcher menuMatcher = menuPattern.matcher(resultText);
@@ -191,8 +167,10 @@ public class CoffeeMissionActivity extends AppCompatActivity {
 
                             if (matchedMenu != null) {
                                 resultTextView.setText("주문하신 " + matchedMenu + " 맛있게 드세요!" );
+                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                updateExp(userId, 100);//경험치
                                 Toast.makeText(getApplicationContext(), "미션 성공!!", Toast.LENGTH_SHORT).show();
-                                //TODO:이후 미션달성여부를 사용자 개인의 데이터베이스등과 연동해야 함.
+
 
 
 
@@ -211,7 +189,33 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                     }
                 });
     }
+    //경험치 올리는 메서드
+    private void updateExp(String userId, int additionalExp) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userExpRef = databaseReference.child("users").child(userId).child("exp");
 
+        userExpRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentExp = mutableData.getValue(Integer.class);
+                if (currentExp == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                mutableData.setValue(currentExp + additionalExp);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (committed) {
+                    Toast.makeText(CoffeeMissionActivity.this, "경험치가 업데이트되었습니다!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CoffeeMissionActivity.this, "경험치 업데이트에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
 
 }
