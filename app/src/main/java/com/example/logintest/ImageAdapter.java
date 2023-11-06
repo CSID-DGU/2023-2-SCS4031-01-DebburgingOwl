@@ -6,38 +6,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import com.bumptech.glide.RequestManager;
-
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
+import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
-
     private Context context;
-    private ArrayList<String> images;
-    private RequestManager glide;
+    private List<ImageModel> imageList;
+    private LayoutInflater inflater;
 
-    public ImageAdapter(Context context, RequestManager glide) {
+    public ImageAdapter(Context context, List<ImageModel> imageList) {
         this.context = context;
-        this.images = new ArrayList<>();
-        this.glide = glide;
-    }
-
-    public void add(String image) {
-        images.add(image);
-    }
-
-    public void clear() {
-        images.clear();
+        this.imageList = imageList;
+        inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return images.size();
+        return imageList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return images.get(position);
+        return imageList.get(position);
     }
 
     @Override
@@ -47,13 +37,24 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.grid_item, parent, false);
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.grid_item, parent, false);
+            holder.imageView = convertView.findViewById(R.id.image_view_item);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        ImageView imageView = convertView.findViewById(R.id.imageView);
-        glide.load(images.get(position)).into(imageView);
+        ImageModel imageModel = imageList.get(position);
+        Picasso.get().load(imageModel.getImageUrl()).into(holder.imageView);
 
         return convertView;
+    }
+
+    private static class ViewHolder {
+        ImageView imageView;
     }
 }
