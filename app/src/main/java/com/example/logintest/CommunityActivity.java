@@ -7,10 +7,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +23,8 @@ import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
+
 import java.io.OutputStream;
 import java.io.IOException;
 
@@ -29,15 +35,20 @@ public class CommunityActivity extends AppCompatActivity {
     private Uri imageUri;
     private StorageReference storageRef;
     private DatabaseReference databaseRef;
+
+    private FirebaseAuth mAuth;
+
     private static final int CAMERA_PERMISSION_REQUEST = 100; // 상수를 추가합니다.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
-        Button btnUpload = findViewById(R.id.btn_upload);
+        FloatingActionButton btnUpload = findViewById(R.id.btn_upload);
+
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
         databaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mAuth = FirebaseAuth.getInstance();
 
         btnUpload.setOnClickListener(v -> openCamera());
     }
@@ -49,15 +60,13 @@ public class CommunityActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            // Convert Bitmap to Uri
-            imageUri = getImageUri(imageBitmap);
+            imageUri = data.getData();
             uploadImage();
         }
     }
@@ -84,13 +93,19 @@ public class CommunityActivity extends AppCompatActivity {
 
     private void uploadImage() {
         if (imageUri != null) {
+            String userId = mAuth.getCurrentUser().getUid();
+            String uploadId = databaseRef.child(userId).push().getKey();
             StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
             fileRef.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                             .addOnSuccessListener(uri -> {
-                                String uploadId = databaseRef.push().getKey();
+                                Upload upload = new Upload(uri.toString(), 0);
                                 databaseRef.child(uploadId).setValue(uri.toString());
-                            }));
+                            }))
+                            .addOnFailureListener(e -> {
+                                // 업로드 실패 시 에러 처리
+                                Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
         }
     }
 
