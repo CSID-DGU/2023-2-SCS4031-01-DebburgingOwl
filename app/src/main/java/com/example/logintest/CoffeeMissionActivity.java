@@ -152,8 +152,8 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
 
-                        if (date != null){ // && date.equals(currentDate))//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
-                            // {
+                        if (date != null && date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
+
                             // 한글 메뉴 이름 추출 및 비교
                             Pattern menuPattern = Pattern.compile("[가-힣]+");
                             Matcher menuMatcher = menuPattern.matcher(resultText);
