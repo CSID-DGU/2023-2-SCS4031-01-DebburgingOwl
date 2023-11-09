@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,35 +51,7 @@ public class CommunityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
         FloatingActionButton btnUpload = findViewById(R.id.btn_upload);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.community);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Intent intent;
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.board) {
-                intent = new Intent(CommunityActivity.this, BoardActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.home) {
-                intent = new Intent(CommunityActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.community) {
-                return true;
-            } else if (itemId == R.id.daily_mission) {
-                intent = new Intent(CommunityActivity.this, DailyMissionActivity.class);
-                startActivity(intent);
-                return true;
-            } else if (itemId == R.id.mypage) {
-                intent = new Intent(CommunityActivity.this, MyPageActivity.class);
-                startActivity(intent);
-                return true;
-            } else {
-                return false;
-            }
-        });
 
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");

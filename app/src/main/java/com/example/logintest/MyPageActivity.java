@@ -2,6 +2,7 @@ package com.example.logintest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView people;
     private TextView userType;
     private DatabaseReference userRef;
-
+    private boolean doubleBackToExitPressedOnce = false;
     Button myPageEditButton;
     Button myPostButton;
     Button myBookmarkButton;
@@ -133,5 +134,23 @@ public class MyPageActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000); // 2초 동안 대기
     }
 }
