@@ -17,9 +17,7 @@
             android:text="일일미션"
             android:textSize="25dp"
             android:padding="15dp"
-            android:layout_marginBottom="10dp"
-            />
-
+            android:layout_marginBottom="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +46,6 @@
                 android:padding="20dp"
                 android:text="보상 내용"
                 android:textColor="#ffffff"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -73,7 +70,8 @@
                     android:layout_height="100dp"
                     android:text="운동해요"
                     android:layout_weight="1"
-                    android:layout_marginRight="3dp"/>
+                    android:layout_marginRight="3dp"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/missionBtn2"
@@ -81,15 +79,15 @@
                     android:layout_height="100dp"
                     android:text="커피 한 잔 해요"
                     android:layout_weight="1"
-                    android:layout_marginLeft="3dp" />
-
+                    android:layout_marginLeft="3dp"
+                    android:visibility="gone"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
-                >
+                android:layout_marginBottom="10dp">
 
                 <Button
                     android:id="@+id/missionBtn3"
@@ -97,7 +95,8 @@
                     android:layout_height="100dp"
                     android:text="mission 3"
                     android:layout_weight="1"
-                    android:layout_marginRight="3dp"/>
+                    android:layout_marginRight="3dp"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/missionBtn4"
@@ -105,9 +104,10 @@
                     android:layout_height="100dp"
                     android:text="mission 4"
                     android:layout_weight="1"
-                    android:layout_marginLeft="3dp" />
-
+                    android:layout_marginLeft="3dp"
+                    android:visibility="gone"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,7 +120,8 @@
                     android:layout_height="100dp"
                     android:text="mission 5"
                     android:layout_weight="1"
-                    android:layout_marginRight="3dp" />
+                    android:layout_marginRight="3dp"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/missionBtn6"
@@ -128,19 +129,18 @@
                     android:layout_height="100dp"
                     android:text="mission 6"
                     android:layout_weight="1"
-                    android:layout_marginLeft="3dp" />
-
+                    android:layout_marginLeft="3dp"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <Button
                 android:id="@+id/missionBtn7"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:text="mission 7"
                 android:layout_gravity="center"
-                android:text="mission 7" />
-
+                android:visibility="gone"/>
         </LinearLayout>
-
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -153,6 +153,6 @@
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_item_color"
         app:itemTextColor="@color/bottom_nav_item_color"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"/>
 
 </RelativeLayout>
