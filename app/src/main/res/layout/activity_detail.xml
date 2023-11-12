@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 이미지 표시 -->
+    <ImageView
+        android:id="@+id/imageViewDetail"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop" />
+
+    <!-- 업로더 이름 -->
+    <TextView
+        android:id="@+id/textViewUploader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageViewDetail"
+        android:padding="8dp"
+        android:textStyle="bold" />
+
+    <!-- 이미지 설명 -->
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewUploader"
+        android:padding="8dp" />
+
+    <!-- 첫 번째 행의 좋아요 버튼들 -->
+    <LinearLayout
+        android:id="@+id/firstRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewDescription"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <!-- 좋아요 버튼 1, 2, 3, 4 -->
+        <!-- 좋아요 버튼 1 -->
+        <ImageButton
+            android:id="@+id/btnLike1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 2 -->
+        <ImageButton
+            android:id="@+id/btnLike2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 3 -->
+        <ImageButton
+            android:id="@+id/btnLike3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 4 -->
+        <ImageButton
+            android:id="@+id/btnLike4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+    </LinearLayout>
+        <!-- ImageButton 설정 추가 -->
+
+    <!-- 두 번째 행의 좋아요 버튼들 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/firstRow"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <!-- 좋아요 버튼 5, 6, 7, 8 -->
+        <ImageButton
+            android:id="@+id/btnLike5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 6 -->
+        <ImageButton
+            android:id="@+id/btnLike6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 7 -->
+        <ImageButton
+            android:id="@+id/btnLike7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+
+        <!-- 좋아요 버튼 8 -->
+        <ImageButton
+            android:id="@+id/btnLike8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_bookmark" />
+        <!-- ImageButton 설정 추가 -->
+    </LinearLayout>
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:menu="@menu/bottom_navigation_menu" />
+</RelativeLayout>

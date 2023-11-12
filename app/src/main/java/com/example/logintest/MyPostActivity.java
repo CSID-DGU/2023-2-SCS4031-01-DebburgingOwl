@@ -3,6 +3,7 @@ package com.example.logintest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -48,6 +49,17 @@ public class MyPostActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "You must be logged in to see your posts.", Toast.LENGTH_LONG).show();
         }
+        myPostGridView.setOnItemClickListener((parent, view, position, id) -> {
+            // 클릭된 이미지의 상세 정보 가져오기
+            ImageModel clickedImage = myUploads.get(position);
+
+            // 상세보기 액티비티로 데이터 전달
+            Intent detailIntent = new Intent(MyPostActivity.this, DetailActivity.class);
+            detailIntent.putExtra("imageUrl", clickedImage.getImageUrl()); // 이미지 URL 전달
+            detailIntent.putExtra("uploaderId", clickedImage.getUploader()); // 업로더 ID 또는 사용자 이름 전달
+            startActivity(detailIntent);
+        });
+
     }
 
     private void loadMyImages(String userId) {
