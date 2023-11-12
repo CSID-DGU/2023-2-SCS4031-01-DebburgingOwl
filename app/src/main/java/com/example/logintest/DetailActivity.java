@@ -1,12 +1,14 @@
 
 package com.example.logintest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 // Picasso 라이브러리 임포트
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,5 +55,34 @@ public class DetailActivity extends AppCompatActivity {
                 // 에러 처리
             }
         });
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.mypage);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(DetailActivity.this, BoardActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.community) {
+                intent = new Intent(DetailActivity.this, CommunityActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.home) {
+                intent = new Intent(DetailActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(DetailActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.mypage) {
+                return true;
+
+
+            } else {
+                return false;
+            }
+            return true;
+        });
     }
+
 }
