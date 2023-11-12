@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +33,34 @@ public class MyPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_post);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.mypage);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(MyPostActivity.this, BoardActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.community) {
+                intent = new Intent(MyPostActivity.this, CommunityActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.home) {
+                intent = new Intent(MyPostActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(MyPostActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.mypage) {
+                return true;
+
+
+            } else {
+                return false;
+            }
+            return true;
+        });
         myPostGridView = findViewById(R.id.myPostGridView);
 
         mAuth = FirebaseAuth.getInstance();
@@ -57,7 +86,9 @@ public class MyPostActivity extends AppCompatActivity {
             Intent detailIntent = new Intent(MyPostActivity.this, DetailActivity.class);
             detailIntent.putExtra("imageUrl", clickedImage.getImageUrl()); // 이미지 URL 전달
             detailIntent.putExtra("uploaderId", clickedImage.getUploader()); // 업로더 ID 또는 사용자 이름 전달
-            startActivity(detailIntent);
+            detailIntent.putExtra("imageId", clickedImage.getImageId()); // 이미지의 고유 ID 추가
+            startActivity(detailIntent);// 업로더 ID 또는 사용자 이름 전달
+
         });
 
     }
@@ -72,6 +103,7 @@ public class MyPostActivity extends AppCompatActivity {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             ImageModel upload = postSnapshot.getValue(ImageModel.class);
                             if (upload != null) {
+                                upload.setImageId(postSnapshot.getKey()); // imageId 설정
                                 myUploads.add(upload);
                             }
                         }
