@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +33,34 @@ public class MyPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_post);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.mypage);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(MyPostActivity.this, BoardActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.community) {
+                intent = new Intent(MyPostActivity.this, CommunityActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.home) {
+                intent = new Intent(MyPostActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(MyPostActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.mypage) {
+                return true;
+
+
+            } else {
+                return false;
+            }
+            return true;
+        });
         myPostGridView = findViewById(R.id.myPostGridView);
 
         mAuth = FirebaseAuth.getInstance();
