@@ -59,8 +59,12 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true">
+
 
             <!-- 이 자바파일 이름이 앱실행시 처음 나오는 화면입니다. -->
             <intent-filter>
