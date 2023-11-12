@@ -28,6 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewUploader"
         android:padding="8dp" />
+    <Switch
+        android:id="@+id/switchPublicPrivate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="전체공개"/>
 
     <!-- 첫 번째 행의 좋아요 버튼들 -->
     <LinearLayout

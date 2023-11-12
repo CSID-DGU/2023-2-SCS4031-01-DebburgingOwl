@@ -86,7 +86,9 @@ public class MyPostActivity extends AppCompatActivity {
             Intent detailIntent = new Intent(MyPostActivity.this, DetailActivity.class);
             detailIntent.putExtra("imageUrl", clickedImage.getImageUrl()); // 이미지 URL 전달
             detailIntent.putExtra("uploaderId", clickedImage.getUploader()); // 업로더 ID 또는 사용자 이름 전달
-            startActivity(detailIntent);
+            detailIntent.putExtra("imageId", clickedImage.getImageId()); // 이미지의 고유 ID 추가
+            startActivity(detailIntent);// 업로더 ID 또는 사용자 이름 전달
+
         });
 
     }
@@ -101,6 +103,7 @@ public class MyPostActivity extends AppCompatActivity {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             ImageModel upload = postSnapshot.getValue(ImageModel.class);
                             if (upload != null) {
+                                upload.setImageId(postSnapshot.getKey()); // imageId 설정
                                 myUploads.add(upload);
                             }
                         }
