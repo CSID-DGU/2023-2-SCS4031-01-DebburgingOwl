@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="나의 게시물"
+        android:text="나의 순간들"
         android:textSize="25dp"
         android:padding="15dp"/>
 
@@ -19,11 +19,15 @@
         android:id="@+id/myPostGridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/myPost"
-        android:numColumns="3"
-        android:horizontalSpacing="10dp"
+        android:layout_below="@id/myPost"
+        android:numColumns="auto_fit"
+        android:columnWidth="100dp"
         android:verticalSpacing="10dp"
-        android:padding="10dp" />
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:paddingTop="10dp"
+        android:clipToPadding="false"/>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

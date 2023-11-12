@@ -63,7 +63,9 @@ public class CoffeeMissionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 selectImage();
             }
+
         });
+
     }
 
     private void selectImage() {
@@ -123,7 +125,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
         }
     }
 
-    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노","아이스아메리카노", "라떼", "카푸치노", "모카", "에스프레소","한우 샤브")); // 커피 메뉴 리스트 준비
+    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노","아이스아메리카노", "라떼", "카푸치노", "모카", "에스프레소","한우샤브")); // 커피 메뉴 리스트 준비
 
     private void recognizeTextFromImage(InputImage image) {
         TextRecognizer recognizer =
@@ -152,8 +154,8 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
 
-                        if (date != null){ // && date.equals(currentDate))//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
-                            // {
+                        if (date != null && date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
+
                             // 한글 메뉴 이름 추출 및 비교
                             Pattern menuPattern = Pattern.compile("[가-힣]+");
                             Matcher menuMatcher = menuPattern.matcher(resultText);
@@ -170,6 +172,9 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 updateExp(userId, 100);//경험치
                                 Toast.makeText(getApplicationContext(), "미션 성공!!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
+                                startActivity(intent);
+                                finish();
 
 
 

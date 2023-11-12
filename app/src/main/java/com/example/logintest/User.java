@@ -42,7 +42,6 @@ public class User {
 
     }
 
-
     public String getName() {
         return name;
     }
@@ -76,6 +75,10 @@ public class User {
         }
         if(this.exp>=1000 && this.level <4){
             this.level=4;
+        }
+
+        if(this.exp>=2000 && this.level<5){
+            this.level=5;
         }
         // 추가적인 레벨 업 조건을 여기에 구현할 수 있습니다.
     }

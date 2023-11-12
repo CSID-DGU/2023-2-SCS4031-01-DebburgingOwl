@@ -1,4 +1,5 @@
 package com.example.logintest;
+
 import android.content.Intent;
 import android.widget.Toast;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
-
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
@@ -31,38 +31,39 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     private ProgressBar stepProgressBar;
     private int steps = 0;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
-        Button btnIncreaseSteps = findViewById(R.id.btnIncreaseSteps);
 
         stepCounterTextView = findViewById(R.id.stepCounter);
-
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
         stepProgressBar = findViewById(R.id.stepProgressBar);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        // 초기 버튼 상태를 비활성화합니다.
+        //missionCompleteButton.setEnabled(false);
+
+        // 걸음 수를 수동으로 증가시키는 버튼
+        Button btnIncreaseSteps = findViewById(R.id.btnIncreaseSteps);
         btnIncreaseSteps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                steps += 100; // 스텝을 10씩 증가
+                steps += 100; // 스텝을 100씩 증가
                 updateStepCounter(); // 스텝 업데이트 메서드 호출
             }
         });
 
-
-
+        // 미션 완료 버튼 리스너
         missionCompleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (steps >= 1000) {
+                    // 경험치를 업데이트하는 메소드 호출
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     updateExp(userId, 100);
 
-                    //Toast.makeText(WorkoutActivity.this, "미션 완료", Toast.LENGTH_SHORT).show();
-
+                    // 메인 액티비티로 이동
                     Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -72,6 +73,7 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             }
         });
 
+        // 바텀 네비게이션 뷰 설정
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.daily_mission);
 
@@ -82,29 +84,23 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             if (itemId == R.id.board) {
                 intent = new Intent(WorkoutActivity.this, BoardActivity.class);
                 startActivity(intent);
-                return true;
             } else if (itemId == R.id.community) {
                 intent = new Intent(WorkoutActivity.this, CommunityActivity.class);
                 startActivity(intent);
-                return true;
             } else if (itemId == R.id.home) {
                 intent = new Intent(WorkoutActivity.this, MainActivity.class);
                 startActivity(intent);
-                return true;
             } else if (itemId == R.id.daily_mission) {
-                intent = new Intent(WorkoutActivity.this, DailyMissionActivity.class);
-                startActivity(intent);
+                // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
                 return true;
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(WorkoutActivity.this, MyPageActivity.class);
                 startActivity(intent);
-                return true;
             } else {
                 return false;
             }
+            return true;
         });
-
-
     }
 
     private void updateStepCounter() {
@@ -121,6 +117,8 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Step counter sensor not available!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -132,19 +130,15 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        steps = (int) event.values[0];
-        stepCounterTextView.setText("Steps: " + steps);
-        stepProgressBar.setProgress(steps);
-//        if (steps >= 1000) {
-//            missionCompleteButton.setEnabled(true);
-//
-//        }
+        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            steps = (int) event.values[0];
+            updateStepCounter();
+        }
     }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // 필요한 경우 여기에 코드를 추가합니다.
+        // 센서 정확도가 변경될 때 호출됩니다. 여기서는 처리할 필요가 없습니다.
     }
 
     private void updateExp(String userId, int additionalExp) {
@@ -182,7 +176,4 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             }
         });
     }
-
-
 }
-
