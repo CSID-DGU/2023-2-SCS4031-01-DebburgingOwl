@@ -41,11 +41,14 @@ public class CommunityActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
+    private ImageAdapter imageAdapter;
 
     private Uri imageUri;
     private StorageReference storageRef;
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
+    private GridView gridView;
+    private List<ImageModel> imageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +84,29 @@ public class CommunityActivity extends AppCompatActivity {
         });
         FloatingActionButton btnUpload = findViewById(R.id.btn_upload);
 
+        gridView = findViewById(R.id.imageGridView);
+        imageList = new ArrayList<>();
 
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
         databaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        imageAdapter = new ImageAdapter(this, imageList);
+        gridView.setAdapter(imageAdapter);
         mAuth = FirebaseAuth.getInstance();
+        loadPublicImages();
 
         btnUpload.setOnClickListener(v -> showImageImportDialog());
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            // 클릭된 이미지의 상세 정보 가져오기
+            ImageModel clickedImage = imageList.get(position);
+
+            // 상세보기 액티비티로 데이터 전달
+            Intent detailIntent = new Intent(CommunityActivity.this, DetailActivity.class);
+            detailIntent.putExtra("imageUrl", clickedImage.getImageUrl()); // 이미지 URL 전달
+            detailIntent.putExtra("uploaderId", clickedImage.getUploader()); // 업로더 ID 또는 사용자 이름 전달
+            detailIntent.putExtra("imageId", clickedImage.getImageId()); // 이미지의 고유 ID 추가
+            startActivity(detailIntent);
+        });
 
     }
 
@@ -160,13 +179,11 @@ public class CommunityActivity extends AppCompatActivity {
             fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot ->
                     fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         String modelId = databaseRef.push().getKey();
-                        // 이미지 메타데이터 생성
-                        HashMap<String, Object> imageData = new HashMap<>();
-                        imageData.put("imageUrl", uri.toString());
-                        imageData.put("isPublic", true); // 유저가 이 이미지를 공개로 설정했다고 가정합니다.
-                        imageData.put("uploader", userId);
-                        // 데이터베이스에 이미지 메타데이터 저장
-                        databaseRef.child(modelId).setValue(imageData).addOnCompleteListener(task -> {
+                        // ImageModel 객체를 사용하여 이미지 메타데이터 생성
+                        ImageModel imageModel = new ImageModel(uri.toString(), true, userId);
+
+                        // 데이터베이스에 ImageModel 객체 저장
+                        databaseRef.child(modelId).setValue(imageModel).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(CommunityActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
                             } else {
@@ -180,10 +197,32 @@ public class CommunityActivity extends AppCompatActivity {
         }
     }
 
+
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
+    private void loadPublicImages() {
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                imageList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ImageModel imageModel = snapshot.getValue(ImageModel.class);
+                    if (imageModel != null && imageModel.getPublicStatus()) {
+                        imageModel.setImageId(snapshot.getKey()); // 고유 ID 설정
+                        imageList.add(imageModel);
+                    }
+                }
+                imageAdapter.notifyDataSetChanged(); // 데이터 변경 알림
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CommunityActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

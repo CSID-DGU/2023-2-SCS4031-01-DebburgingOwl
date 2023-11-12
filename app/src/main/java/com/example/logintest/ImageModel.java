@@ -2,8 +2,10 @@ package com.example.logintest;
 
 public class ImageModel {
     private String imageUrl;
-    private boolean isPublic;
-    private String uploader; // or any other fields you need
+    private boolean publicStatus; // 필드 이름 변경
+    private String uploader;
+    private String imageId; // 고유 ID 필드 추가
+
 
     // Constructor
     public ImageModel() {
@@ -11,9 +13,9 @@ public class ImageModel {
     }
 
     // Parameterized constructor
-    public ImageModel(String imageUrl, boolean isPublic, String uploader) {
+    public ImageModel(String imageUrl, boolean publicStatus, String uploader) {
         this.imageUrl = imageUrl;
-        this.isPublic = isPublic;
+        this.publicStatus = publicStatus;
         this.uploader = uploader;
     }
 
@@ -26,12 +28,12 @@ public class ImageModel {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isPublic() {
-        return isPublic;
+    public boolean getPublicStatus() {
+        return publicStatus;
     }
 
-    public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+    public void setPublicStatus(boolean publicStatus) {
+        this.publicStatus = publicStatus;
     }
 
     public String getUploader() {
@@ -40,5 +42,13 @@ public class ImageModel {
 
     public void setUploader(String uploader) {
         this.uploader = uploader;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 }
