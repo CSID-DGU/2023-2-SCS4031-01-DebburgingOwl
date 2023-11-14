@@ -2,8 +2,12 @@ package com.example.logintest;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -52,8 +56,15 @@ public class UserTypeActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        // 권한 확인
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // 권한이 부여되지 않았으면 권한 요청
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+        } else {
+            // 이미 권한이 부여되어 있다면 카메라 열기
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        }
     }
 
     private void openGallery() {
