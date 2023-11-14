@@ -6,11 +6,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
-
-
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -28,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Logintest"
         tools:targetApi="31">
+        <activity
+            android:name=".UserTypeActivity"
+            android:exported="false" />
         <activity
             android:name=".NoticeBoardDetailActivity"
             android:exported="false" />
@@ -65,7 +66,6 @@
             android:name=".LoginActivity"
             android:exported="true">
 
-
             <!-- 이 자바파일 이름이 앱실행시 처음 나오는 화면입니다. -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -91,10 +91,13 @@
         <activity
             android:name=".WorkoutActivity"
             android:exported="false" />
-        <service android:name=".StepCounterService" android:foregroundServiceType="dataSync">
+
+        <service
+            android:name=".StepCounterService"
+            android:foregroundServiceType="dataSync">
+
             <!-- Declare the foreground service type -->
         </service>
-
     </application>
 
 </manifest>
