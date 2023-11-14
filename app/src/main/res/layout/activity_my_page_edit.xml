@@ -20,13 +20,16 @@
             android:textSize="25dp"
             android:padding="15dp"/>
 
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/mypageUserImage"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_user_profile"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:background="@drawable/ic_user_profile"
+            app:civ_border_overlay="true"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#609966"/>
 
         <LinearLayout
             android:layout_width="match_parent"
