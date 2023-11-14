@@ -3,14 +3,22 @@ package com.example.logintest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,18 +39,28 @@ public class MyPageEditActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
 
+    private static final int REQUEST_CAMERA = 1;
+    private static final int REQUEST_GALLERY = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page_edit);
 
-        userImage = findViewById(R.id.userImage);
+        userImage = findViewById(R.id.mypageUserImage);
         myPageName = findViewById(R.id.myPageName);
         myPageNickname = findViewById(R.id.myPageNickname);
         myPagePassword = findViewById(R.id.myPagePassword);
         myPagePasswordCheck = findViewById(R.id.myPagePasswordCheck);
         myPageEmail = findViewById(R.id.myPageEmail);
         myPageEditOkBtn = findViewById(R.id.myPageEditOkBtn);
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImageImportDialog();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -136,4 +154,52 @@ public class MyPageEditActivity extends AppCompatActivity {
         });
 
     }
+
+    private void showImageImportDialog() {
+        String[] items = {"Camera", "Gallery"};
+        androidx.appcompat.app.AlertDialog.Builder dialog = new androidx.appcompat.app.AlertDialog.Builder(this);
+        dialog.setTitle("Select Image");
+        dialog.setItems(items, (dialogInterface, i) -> {
+            if (i == 0) {
+                openCamera();
+            } else if (i == 1) {
+                openGallery();
+            }
+        });
+        dialog.show();
+    }
+
+    private void openCamera() {
+        // 권한 확인
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // 권한이 부여되지 않았으면 권한 요청
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+        } else {
+            // 이미 권한이 부여되어 있다면 카메라 열기
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        }
+    }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, REQUEST_GALLERY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == REQUEST_CAMERA) {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    userImage.setImageBitmap(imageBitmap);
+                }
+            } else if (requestCode == REQUEST_GALLERY) {
+                userImage.setImageURI(data.getData());
+            }
+        }
+    }
+
 }
