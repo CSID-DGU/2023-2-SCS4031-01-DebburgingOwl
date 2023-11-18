@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +31,18 @@ public class NoticeBoardFragment extends Fragment {
 
     ListView listView;
     SearchView searchView;
+    private DatabaseReference noticesRef;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 레이아웃을 inflate하고 그 결과를 view 변수에 저장
         View view = inflater.inflate(R.layout.fragment_notice_board, container, false);
 
-        // 게시글 데이터를 임의로 생성
+        // Firebase Realtime Database의 notices 참조 가져오기
+        noticesRef = FirebaseDatabase.getInstance().getReference("notices");
+        loadNoticeData();
+
         List<String> postList = new ArrayList<>();
-        postList.add("공지 게시글 1");
-        postList.add("공지 게시글 2");
-        postList.add("공지 게시글 3");
-        postList.add("공지 게시글 4");
-        postList.add("공지 게시글 5");
-        postList.add("나의 게시글 1");
-        postList.add("나의 게시글 2");
-        postList.add("나의 게시글 3");
+
 
         // ArrayAdapter를 생성하고 리스트뷰에 설정
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, postList);
@@ -67,17 +72,46 @@ public class NoticeBoardFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 리스트 아이템이 클릭되면 해당 포지션의 데이터 가져오기
-                String selectedItem = (String) parent.getItemAtPosition(position);
+                Notice selectedNotice = (Notice) parent.getItemAtPosition(position);
 
                 // 클릭된 아이템에 대한 추가 작업 수행
                 // 예를 들면, 선택된 아이템을 다음 액티비티로 전달하여 보여주기
                 Intent intent = new Intent(getActivity(), NoticeBoardDetailActivity.class);
-                intent.putExtra("selectedItem", selectedItem);
+                intent.putExtra("selectedNotice", selectedNotice);
                 startActivity(intent);
             }
         });
 
         return view;
+    }
+
+    private void loadNoticeData() {
+        noticesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Notice> noticeList = new ArrayList<>();
+
+                for (DataSnapshot noticeSnapshot : dataSnapshot.getChildren()) {
+                    // Notice 객체로 변환 후 리스트에 추가
+                    Notice notice = noticeSnapshot.getValue(Notice.class);
+                    if (notice != null) {
+                        noticeList.add(notice);
+                    }
+                }
+
+                // ArrayAdapter를 생성하고 리스트뷰에 설정
+                NoticeAdapter adapter = new NoticeAdapter(getContext(), noticeList);
+                listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 데이터 불러오기에 실패한 경우 에러 처리
+                // 여기서는 간단한 Toast 메시지로 사용자에게 알림
+                Toast.makeText(getContext(), "데이터 불러오기에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Log.e("NoticeBoardFragment", "데이터 불러오기 실패", databaseError.toException());
+            }
+        });
     }
 
     public class InformationAdapter extends ArrayAdapter<String> {

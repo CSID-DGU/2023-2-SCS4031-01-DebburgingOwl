@@ -27,6 +27,14 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
         title = (TextView) findViewById(R.id.noticeTitle);
         content = (TextView) findViewById(R.id.noticeContent);
 
+        // Intent로부터 전달받은 Notice 객체를 가져옴
+        Notice selectedNotice = (Notice) getIntent().getSerializableExtra("selectedNotice");
+
+        // Notice 객체의 데이터를 화면에 표시
+        if (selectedNotice != null) {
+            title.setText(selectedNotice.getTitle());
+            content.setText(selectedNotice.getContent());
+        }
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,5 +74,10 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    // 다른 액티비티로 이동하는 메서드
+    private void navigateToActivity(Class<?> cls) {
+        Intent intent = new Intent(NoticeBoardDetailActivity.this, cls);
+        startActivity(intent);
     }
 }
