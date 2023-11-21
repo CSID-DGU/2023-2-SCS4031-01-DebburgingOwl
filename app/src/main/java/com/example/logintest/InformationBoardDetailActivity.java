@@ -41,6 +41,14 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         inforBoardEditBtn = findViewById(R.id.inforBoardEditBtn);
         mentorInfoBtn = findViewById(R.id.mentorInfoBtn);
 
+        // Information 객체를 받아오는 코드
+        Intent intent = getIntent();
+        Information information = (Information) intent.getSerializableExtra("selectedItem");
+
+        // 가져온 정보를 TextView에 설정
+        title.setText(information.getTitle());
+        content.setText(information.getContent());
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,28 +72,28 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.board);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Intent intent;
+            Intent navigationIntent;
             int itemId = item.getItemId();
 
             if (itemId == R.id.board) {
-                intent = new Intent(InformationBoardDetailActivity.this, BoardActivity.class);
-                startActivity(intent);
+                navigationIntent = new Intent(InformationBoardDetailActivity.this, BoardActivity.class);
+                startActivity(navigationIntent);
                 return true;
             } else if (itemId == R.id.community) {
-                intent = new Intent(InformationBoardDetailActivity.this, CommunityActivity.class);
-                startActivity(intent);
+                navigationIntent = new Intent(InformationBoardDetailActivity.this, CommunityActivity.class);
+                startActivity(navigationIntent);
                 return true;
             } else if (itemId == R.id.home) {
-                intent = new Intent(InformationBoardDetailActivity.this, MainActivity.class);
-                startActivity(intent);
+                navigationIntent = new Intent(InformationBoardDetailActivity.this, MainActivity.class);
+                startActivity(navigationIntent);
                 return true;
             } else if (itemId == R.id.daily_mission) {
-                intent = new Intent(InformationBoardDetailActivity.this, DailyMissionActivity.class);
-                startActivity(intent);
+                navigationIntent = new Intent(InformationBoardDetailActivity.this, DailyMissionActivity.class);
+                startActivity(navigationIntent);
                 return true;
             } else if (itemId == R.id.mypage) {
-                intent = new Intent(InformationBoardDetailActivity.this, MyPageActivity.class);
-                startActivity(intent);
+                navigationIntent = new Intent(InformationBoardDetailActivity.this, MyPageActivity.class);
+                startActivity(navigationIntent);
                 return true;
             } else {
                 return false;
