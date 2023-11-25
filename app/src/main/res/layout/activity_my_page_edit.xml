@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="마이페이지"
-            android:textSize="25dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:padding="15dp"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp">
 
@@ -49,11 +50,12 @@
             <EditText
                 android:id="@+id/myPageName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:ems="10"
                 android:inputType="text"
                 android:text=""
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:contentDescription="이름" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,11 +66,12 @@
             <EditText
                 android:id="@+id/myPageNickname"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:ems="10"
                 android:text=""
                 android:inputType="text"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:contentDescription="닉네임"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,10 +82,11 @@
             <EditText
                 android:id="@+id/myPagePassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:ems="10"
                 android:inputType="textPassword"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:contentDescription="비밀번호"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,10 +97,11 @@
             <EditText
                 android:id="@+id/myPagePasswordCheck"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:ems="10"
                 android:inputType="textPassword"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:contentDescription="비밀번호 확인"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,21 +112,23 @@
             <EditText
                 android:id="@+id/myPageEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:ems="10"
                 android:text=""
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:contentDescription="이메일"/>
 
         </LinearLayout>
 
         <Button
             android:id="@+id/myPageEditOkBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="확인"
             android:textColor="#ffffff"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_shape"/>
 
     </LinearLayout>
 

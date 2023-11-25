@@ -99,15 +99,16 @@
             android:enabled="true"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/design_default_color_primary"
+            android:background="@drawable/mission_color_background"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnIncreaseSteps"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="센서 테스트용버튼"/>
+            android:text="센서 테스트용버튼"
+            android:background="@drawable/mission_line_background"/>
 
     </LinearLayout>
 

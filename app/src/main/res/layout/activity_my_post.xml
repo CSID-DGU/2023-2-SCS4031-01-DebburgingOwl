@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="나의 순간들"
-        android:textSize="25dp"
+        android:text="나의 게시물"
+        android:textStyle="bold"
+        android:textSize="20dp"
         android:padding="15dp"/>
 
     <GridView

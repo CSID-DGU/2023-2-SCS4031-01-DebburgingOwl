@@ -22,7 +22,6 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
     ImageView infoUserPicture;
     TextView infoUserType;
     TextView infoUserNickname;
-    Button inforBoardEditBtn;
     Button mentorInfoBtn;
     BottomSheetFragment bottomSheet;
 
@@ -38,7 +37,6 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         infoUserPicture = findViewById(R.id.infoUserPicture);
         infoUserType = findViewById(R.id.infoUserType);
         infoUserNickname = findViewById(R.id.infoUserNickname);
-        inforBoardEditBtn = findViewById(R.id.inforBoardEditBtn);
         mentorInfoBtn = findViewById(R.id.mentorInfoBtn);
 
         // Information 객체를 받아오는 코드
