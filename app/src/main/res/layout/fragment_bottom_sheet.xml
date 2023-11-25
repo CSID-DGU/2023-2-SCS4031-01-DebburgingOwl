@@ -46,9 +46,11 @@
 
     <Button
         android:id="@+id/closeBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="확인" />
+        android:text="확인"
+        android:textColor="#ffffff"
+        android:background="@drawable/button_shape"/>
 
 </LinearLayout>

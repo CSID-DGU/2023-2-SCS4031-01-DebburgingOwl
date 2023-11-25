@@ -20,8 +20,10 @@
                 android:layout_height="wrap_content"
                 android:text="게시판"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"
-                android:padding="15dp"/>
+                android:padding="15dp"
+                android:background="#ffffff"/>
 
             <!-- 탭바 -->
             <com.google.android.material.tabs.TabLayout
@@ -34,6 +36,8 @@
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="#609966"
                 app:tabTextColor="#000000"
+                app:tabIndicatorColor="#609966"
+                app:tabRippleColor="@null"
                 android:contentDescription="탭바" />
 
         </com.google.android.material.appbar.AppBarLayout>

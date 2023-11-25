@@ -18,7 +18,7 @@
     <item
         android:id="@+id/daily_mission"
         android:icon="@drawable/ic_mission"
-        android:title="일일미션" />
+        android:title="미션" />
 
     <item
         android:id="@+id/mypage"

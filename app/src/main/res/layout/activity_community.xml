@@ -9,10 +9,12 @@
         android:id="@+id/communityhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="앱 로고"
-        android:textSize="18sp"
+        android:text="커뮤니티"
+        android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:padding="15dp"/>
     <GridView
         android:id="@+id/imageGridView"
         android:layout_width="match_parent"
@@ -43,8 +45,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/bottomNavigationView"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@android:drawable/ic_menu_upload" />
+        android:src="@android:drawable/ic_menu_upload"
+        app:backgroundTint="#609966" />
 
 </RelativeLayout>

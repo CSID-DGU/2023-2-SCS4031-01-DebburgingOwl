@@ -87,7 +87,8 @@
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:text="인증하기"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:background="@drawable/mission_color_background"/>
 
     </LinearLayout>
 

@@ -3,34 +3,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp">
+    android:padding="32dp"
+    android:background="#EDF1D6">
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:layout_height="60dp"
+        android:hint="Email"
+        android:layout_marginTop="280dp"
+        android:padding="20dp"
+        android:background="@drawable/line_background"/>
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:hint="Password"
         android:inputType="textPassword"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:padding="20dp"
+        android:background="@drawable/line_background"/>
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:layout_marginTop="24dp"/>
+        android:layout_height="60dp"
+        android:text="로그인"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"/>
 
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="회원가입"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"/>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="DebburgingOwl"
+        android:textStyle="bold|italic" />
 
 </LinearLayout>

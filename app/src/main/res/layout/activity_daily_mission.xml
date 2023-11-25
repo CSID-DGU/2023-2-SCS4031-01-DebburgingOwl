@@ -14,8 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="일일미션"
-            android:textSize="25dp"
+            android:text="미션"
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:padding="15dp"
             android:layout_marginBottom="10dp"/>
 
@@ -28,15 +29,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/mission_color_background">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="20dp"
-                android:text="미션 완료 시 보상"
-                android:textColor="#ffffff"/>
+            android:background="@drawable/mission_line_background">
 
             <TextView
                 android:id="@+id/missonRewardContent"
@@ -44,8 +37,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="20dp"
-                android:text="보상 내용"
-                android:textColor="#ffffff"/>
+                android:text="미션 완료하면 10 포인트 적립"
+                android:textStyle="bold"
+                android:textSize="15dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -69,15 +63,19 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="운동해요"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/missionBtn2"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="커피 한 잔 해요"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp"
                     android:visibility="gone"/>
@@ -94,6 +92,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="mission 3"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp"
                     android:visibility="gone"/>
@@ -103,6 +103,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="mission 4"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp"
                     android:visibility="gone"/>
@@ -119,6 +121,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="mission 5"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginRight="3dp"
                     android:visibility="gone"/>
@@ -128,6 +132,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:text="mission 6"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/mission_color_background"
                     android:layout_weight="1"
                     android:layout_marginLeft="3dp"
                     android:visibility="gone"/>
@@ -138,6 +144,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:text="mission 7"
+                android:textColor="#ffffff"
+                android:background="@drawable/mission_color_background"
                 android:layout_gravity="center"
                 android:visibility="gone"/>
         </LinearLayout>
