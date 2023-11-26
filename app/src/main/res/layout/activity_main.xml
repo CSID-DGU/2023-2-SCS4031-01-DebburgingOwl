@@ -15,7 +15,7 @@
             android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="앱 로고"
+            android:text="홈"
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"/>

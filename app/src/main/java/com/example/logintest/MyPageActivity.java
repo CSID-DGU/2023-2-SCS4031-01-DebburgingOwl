@@ -21,16 +21,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class MyPageActivity extends AppCompatActivity {
-    private TextView gradeTextView;
-    private TextView nickname;
-    private TextView point;
-    private TextView people;
-    private TextView userType;
+    private TextView gradeTextView, nickname, point, people, userType;
     private DatabaseReference userRef;
     private boolean doubleBackToExitPressedOnce = false;
-    Button myPageEditButton;
-    Button myPostButton;
-    Button myBookmarkButton;
+    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreBtn;
 
 
     @Override
