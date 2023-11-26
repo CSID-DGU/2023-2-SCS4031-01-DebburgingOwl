@@ -41,8 +41,8 @@ public class ImageAdapter extends BaseAdapter {
 
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.grid_item, parent, false);
-            holder.imageView = convertView.findViewById(R.id.image_view_item);
+            convertView = inflater.inflate(R.layout.grid_item_community, parent, false);
+            holder.imageView = convertView.findViewById(R.id.image_view_item_community);
             // 이미지 뷰를 정사각형으로 설정합니다.
             int size = parent.getWidth() / 3; // 가정: 한 줄에 3개의 이미지가 들어감
             convertView.setLayoutParams(new ViewGroup.LayoutParams(size, size));

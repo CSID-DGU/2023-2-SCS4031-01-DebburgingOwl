@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <!-- 이미지 표시 -->
+    <!-- 이미지 표시, 사용 가능한 공간을 채움 -->
     <ImageView
         android:id="@+id/imageViewDetail"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:scaleType="centerCrop" />
 
     <!-- 업로더 이름 -->
@@ -17,7 +18,6 @@
         android:id="@+id/textViewUploader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageViewDetail"
         android:padding="8dp"
         android:textStyle="bold" />
 
@@ -26,98 +26,65 @@
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewUploader"
         android:padding="8dp" />
+
+    <!-- 전체공개 스위치 -->
     <Switch
         android:id="@+id/switchPublicPrivate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="전체공개"/>
 
-    <!-- 첫 번째 행의 좋아요 버튼들 -->
+    <!-- 좋아요 및 댓글 버튼 -->
     <LinearLayout
         android:id="@+id/firstRow"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewDescription"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp">
 
-        <!-- 좋아요 버튼 1, 2, 3, 4 -->
-        <!-- 좋아요 버튼 1 -->
+        <!-- 좋아요 버튼 -->
         <ImageButton
             android:id="@+id/btnLike1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_like_line" />
 
-        <!-- 좋아요 버튼 2 -->
+        <!-- 댓글 버튼 -->
         <ImageButton
-            android:id="@+id/btnLike2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-
-        <!-- 좋아요 버튼 3 -->
-        <ImageButton
-            android:id="@+id/btnLike3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-
-        <!-- 좋아요 버튼 4 -->
-        <ImageButton
-            android:id="@+id/btnLike4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
+            android:id="@+id/btnComment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_community" />
     </LinearLayout>
-        <!-- ImageButton 설정 추가 -->
-
-    <!-- 두 번째 행의 좋아요 버튼들 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewComments"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/firstRow"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
+        android:visibility="gone"/>
 
-        <!-- 좋아요 버튼 5, 6, 7, 8 -->
-        <ImageButton
-            android:id="@+id/btnLike5"
+    <!-- 댓글 입력 필드 및 게시 버튼 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- 댓글 입력 필드 -->
+        <EditText
+            android:id="@+id/editTextComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="댓글 추가..." />
+
+        <!-- 게시 버튼 -->
+        <Button
+            android:id="@+id/buttonSubmitComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-
-        <!-- 좋아요 버튼 6 -->
-        <ImageButton
-            android:id="@+id/btnLike6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-
-        <!-- 좋아요 버튼 7 -->
-        <ImageButton
-            android:id="@+id/btnLike7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-
-        <!-- 좋아요 버튼 8 -->
-        <ImageButton
-            android:id="@+id/btnLike8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_bookmark" />
-        <!-- ImageButton 설정 추가 -->
+            android:text="게시" />
     </LinearLayout>
 
     <!-- Bottom Navigation Bar -->
@@ -125,9 +92,8 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_item_color"
         app:itemTextColor="@color/bottom_nav_item_color"
         app:menu="@menu/bottom_navigation_menu" />
-</RelativeLayout>
+</LinearLayout>
