@@ -6,15 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".WorkoutActivity">
 
+    <TextView
+        android:id="@+id/workouttext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="미션"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="15dp"
+        android:layout_marginBottom="5dp"/>
+
     <LinearLayout
         android:id="@+id/missionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/workouttext"
         android:background="@drawable/mission_line_background">
 
         <TextView
@@ -41,9 +52,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/missionTitle"
         android:background="@drawable/mission_color_background">
 

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,6 +65,35 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 selectImage();
             }
 
+        });
+
+        // 바텀 네비게이션 뷰 설정
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.daily_mission);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(CoffeeMissionActivity.this, BoardActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.community) {
+                intent = new Intent(CoffeeMissionActivity.this, CommunityActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.home) {
+                intent = new Intent(CoffeeMissionActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.daily_mission) {
+                // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
+                return true;
+            } else if (itemId == R.id.mypage) {
+                intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
+                startActivity(intent);
+            } else {
+                return false;
+            }
+            return true;
         });
 
     }
