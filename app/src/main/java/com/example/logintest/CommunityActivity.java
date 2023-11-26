@@ -196,7 +196,18 @@ public class CommunityActivity extends AppCompatActivity {
             );
         }
     }
+    private void initializeLikeDataForImage(String imageId) {
+        DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes");
 
+        // 해당 이미지 ID에 대한 좋아요 노드 생성
+        likesRef.child(imageId).setValue(new HashMap<String, Boolean>())
+                .addOnSuccessListener(aVoid -> {
+                    // 초기화 성공 로그
+                })
+                .addOnFailureListener(e -> {
+                    // 초기화 실패 로그
+                });
+    }
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
