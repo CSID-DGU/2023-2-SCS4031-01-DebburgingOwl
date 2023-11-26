@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".MyPageActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,7 +97,10 @@
             android:layout_width="150dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_margin="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text=" 수정하기"
@@ -107,13 +109,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
             android:padding="5dp">
 
             <TextView
@@ -136,12 +138,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:padding="5dp">
 
             <TextView
@@ -164,12 +166,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:padding="5dp">
 
             <TextView
@@ -182,7 +184,7 @@
 
             <Button
                 android:id="@+id/myPostBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="보기"
                 android:textColor="#ffffff"
@@ -195,10 +197,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="5dp">
@@ -213,12 +215,43 @@
 
             <Button
                 android:id="@+id/myBookmarkBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:text="보기"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_shape"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="  포인트 상점" />
+
+            <Button
+                android:id="@+id/pointStoreBtn"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:text="확인"
                 android:textColor="#ffffff"
                 android:background="@drawable/button_shape"/>
 
