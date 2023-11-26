@@ -32,6 +32,7 @@ public class MyPageActivity extends AppCompatActivity {
     Button myPostButton;
     Button myBookmarkButton;
 
+    private int totalLikeCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class MyPageActivity extends AppCompatActivity {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
+            totalLikeCount=0;
+            loadUserLikesCount(userId);
 
             // Firebase Realtime Database에서 사용자의 데이터 참조를 가져옴
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -135,7 +138,43 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
     }
+    private void loadUserLikesCount(String userId) {
+        DatabaseReference uploadsRef = FirebaseDatabase.getInstance().getReference("uploads");
+        DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes");
 
+        uploadsRef.orderByChild("uploader").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot uploadSnapshot : dataSnapshot.getChildren()) {
+                    String imageId = uploadSnapshot.getKey();
+
+                    likesRef.child(imageId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot likeSnapshot) {
+                            totalLikeCount += likeSnapshot.getChildrenCount();
+                            updateUserLikeCount(userId, totalLikeCount); // 사용자의 좋아요 수 업데이트
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // 오류 처리
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
+    private void updateUserLikeCount(String userId, int likeCount) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        usersRef.child("likeCount").setValue(likeCount); // 좋아요 수 업데이트
+    }
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {

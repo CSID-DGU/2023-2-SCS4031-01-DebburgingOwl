@@ -175,19 +175,41 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupLikeButton(ImageButton button, String imageId) {
-        button.setOnClickListener(view -> {
-            DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        // 좋아요 상태를 초기화
+        likesRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 이미 좋아요를 눌렀다면 아이콘 변경
+                    button.setImageResource(R.drawable.ic_liked);
+                } else {
+                    // 좋아요를 누르지 않았다면 기본 아이콘으로 설정
+                    button.setImageResource(R.drawable.ic_like);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+
+        // 좋아요 버튼 클릭 이벤트 처리
+        button.setOnClickListener(view -> {
             likesRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        // 이미 좋아요를 눌렀다면 좋아요 취소
+                        // 이미 좋아요를 눌렀다면 좋아요 취소 및 아이콘 변경
                         likesRef.child(userId).removeValue();
+                        button.setImageResource(R.drawable.ic_like);
                     } else {
-                        // 좋아요를 누르지 않았다면 좋아요 추가
+                        // 좋아요를 누르지 않았다면 좋아요 추가 및 아이콘 변경
                         likesRef.child(userId).setValue(true);
+                        button.setImageResource(R.drawable.ic_liked);
                     }
                 }
 
