@@ -47,15 +47,15 @@
         <!-- 좋아요 버튼 -->
         <ImageButton
             android:id="@+id/btnLike1"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_like_line" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_like" />
 
         <!-- 댓글 버튼 -->
         <ImageButton
             android:id="@+id/btnComment"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_community" />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
