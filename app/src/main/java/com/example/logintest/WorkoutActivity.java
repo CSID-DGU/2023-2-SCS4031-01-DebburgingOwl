@@ -62,6 +62,7 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                     // 경험치를 업데이트하는 메소드 호출
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     updateExp(userId, 100);
+                    updatePoint(userId,100);
 
                     // 메인 액티비티로 이동
                     Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
@@ -140,7 +141,39 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // 센서 정확도가 변경될 때 호출됩니다. 여기서는 처리할 필요가 없습니다.
     }
+    private void updatePoint(String userId, int additionalPoint){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userRef = databaseReference.child("users").child(userId);
 
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // 사용자의 현재 경험치를 추가합니다.
+                user.setPoint(user.getPoint() + additionalPoint);
+
+
+                // 변경된 사용자 객체를 데이터베이스에 다시 씁니다.
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (committed) {
+                    // 트랜잭션이 성공적으로 커밋되었습니다. UI를 업데이트하거나 사용자에게 알림을 줄 수 있습니다.
+                    Toast.makeText(WorkoutActivity.this, "포인트 적립이 완료되었습니다!", Toast.LENGTH_SHORT).show();
+                } else {
+                    // 트랜잭션이 실패했습니다.
+                    Toast.makeText(WorkoutActivity.this, "포인트 적립에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
     private void updateExp(String userId, int additionalExp) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userRef = databaseReference.child("users").child(userId);
