@@ -24,7 +24,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView gradeTextView, nickname, point, people, userType;
     private DatabaseReference userRef;
     private boolean doubleBackToExitPressedOnce = false;
-    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreBtn;
+    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreButton;
 
 
     @Override
@@ -95,6 +95,15 @@ public class MyPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyPageActivity.this, MyBookmarkActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        pointStoreButton = findViewById(R.id.pointStoreBtn);
+        pointStoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyPageActivity.this, PointActivity.class);
                 startActivity(intent);
             }
         });
