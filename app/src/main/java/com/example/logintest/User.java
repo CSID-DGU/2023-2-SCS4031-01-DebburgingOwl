@@ -8,10 +8,11 @@ public class User {
     private String email;
     private String nickname;
     private String profileImageUrl;
+    private String usertype;
     private int postCount;
     private int likeCount;
+    private String userType;
     private int exp;
-    private ArrayList<Integer> levelThresholds;
     private  int level;
     private int point;
     public User() {
@@ -19,24 +20,24 @@ public class User {
         this.email = "";
         this.nickname = "";
         this.profileImageUrl = "";
+        this.usertype="";
         this.postCount = 0;
         this.likeCount = 0;
         this.exp = 0;
-        this.levelThresholds = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
         this.level=1;
         this.point=0;
 
     }
 
-    public User(String name, String email, String nickname) {
+    public User(String name, String email, String nickname,String userType) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = "";
+        this.usertype=userType;
         this.postCount = 0;
         this.likeCount = 0;
         this.exp = 0;
-        this.levelThresholds = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
         this.level=1;
         this.point=0;
 
@@ -55,13 +56,20 @@ public class User {
     public String getProfileImageUrl() { return profileImageUrl; }
 
     public int getPostCount() { return postCount; }
-
+    public void setPoint(int point){
+        this.point=point;
+    }
+    public void setUserType(String usertype){
+        this.usertype=usertype;
+    }
+    public String getUserType(){
+        return usertype;
+    }
     public int getLikeCount() { return likeCount; }
     public void setExp(int exp){
         this.exp=exp;
     }
     public int getExp() { return exp; }
-    public ArrayList<Integer> getLevelThresholds() {return levelThresholds;}
 
     public int getLevel(){return level;}
 
