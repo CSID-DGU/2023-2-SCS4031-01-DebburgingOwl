@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -34,37 +35,49 @@ public class RegisterActivity extends Activity {
     private DatabaseReference databaseReference;
     private Button buttonRegister, buttonUploadImage;
     private ImageView userImage;
-    private RadioButton mentorRadio, menteeRadio;
+
+    private String userType;
     private Uri selectedImageUri;
     private static final int REQUEST_CAMERA = 1;
     private static final int REQUEST_GALLERY = 2;
+    private RadioGroup radioGroup;
+    private RadioButton mentor,mentee;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         editTextName = findViewById(R.id.editTextNameRegister);
         editTextEmail = findViewById(R.id.editTextEmailRegister);
         editTextPassword = findViewById(R.id.editTextPasswordRegister);
         editTextNickname = findViewById(R.id.editTextNicknameRegister);
         Button buttonRegister = findViewById(R.id.buttonRegister);
         userImage = findViewById(R.id.userImage);
-        mentorRadio = findViewById(R.id.mentorRadio);
-        menteeRadio =findViewById(R.id.menteeRadio);
+        radioGroup = findViewById(R.id.radioGroup);
+        mentee = findViewById(R.id.menteeRadio);
+        mentor = findViewById(R.id.mentorRadio);
+
+
+        int selectedUserType = radioGroup.getCheckedRadioButtonId();
+
+
 
 
         mAuth = FirebaseAuth.getInstance();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.mentorRadio) {
+                userType = "MENTOR";
+            } else if (checkedId == R.id.menteeRadio) {
+                userType = "MENTEE";
             }
         });
+
+        buttonRegister.setOnClickListener(v -> registerUser());
+
 
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +92,8 @@ public class RegisterActivity extends Activity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String nickname = editTextNickname.getText().toString().trim();
+
+
 
         if (name.isEmpty() || name.length() < 2 || name.length() > 30) {
             editTextName.setError("Please enter a valid name (2~30 characters)");
@@ -117,7 +132,7 @@ public class RegisterActivity extends Activity {
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
                                             String userId = user.getUid();
-                                            User userData = new User(name, email, nickname);
+                                            User userData = new User(name, email, nickname, userType);
                                             databaseReference.child("users").child(userId).setValue(userData);
                                             Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(RegisterActivity.this, MyPageActivity.class);
