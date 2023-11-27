@@ -34,7 +34,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="전체공개"/>
-
+    <Button
+        android:id="@+id/buttonDeletePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제"
+        android:visibility="gone"/>
     <!-- 좋아요 및 댓글 버튼 -->
     <LinearLayout
         android:id="@+id/firstRow"

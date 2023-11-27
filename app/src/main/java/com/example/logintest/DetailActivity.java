@@ -1,6 +1,7 @@
 
 package com.example.logintest;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,8 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     private ImageButton btnLike;
     private ImageButton btnComment; // 댓글 버튼
     private EditText editTextComment; // 댓글 입력 필드
-    private Button buttonSubmitComment; // 게시 버튼
-
+    private Button buttonSubmitComment, buttonDeletePost; // 게시 버튼
 
 
     @Override
@@ -56,6 +57,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         btnLike = findViewById(R.id.btnLike1);
         btnComment = findViewById(R.id.btnComment);
+        buttonDeletePost = findViewById(R.id.buttonDeletePost); // XML 레이아웃에 정의된 삭제 버튼을 찾습니다.
+
         // RecyclerView 초기화
         recyclerViewComments = findViewById(R.id.recyclerViewComments);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
@@ -88,6 +91,7 @@ public class DetailActivity extends AppCompatActivity {
         if (uploaderId != null && uploaderId.equals(currentUserId)) {
             // 현재 사용자가 업로더일 경우 스위치 표시
             switchPublicPrivate.setVisibility(View.VISIBLE);
+            buttonDeletePost.setVisibility(View.VISIBLE);
             switchPublicPrivate.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 // 여기에 스위치 상태 변경 시 로직 추가
                 updateImagePublicStatus(isChecked);
@@ -97,7 +101,16 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             // 현재 사용자가 업로더가 아닐 경우 스위치 숨기기
             switchPublicPrivate.setVisibility(View.GONE);
+            buttonDeletePost.setVisibility(View.GONE);
+
         }
+        buttonDeletePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 게시물 삭제 확인 대화상자 표시
+                showDeleteConfirmationDialog(imageId);
+            }
+        });
 
         // ... 나머지 코드
         setupLikeButton(btnLike, imageId);
@@ -173,6 +186,36 @@ public class DetailActivity extends AppCompatActivity {
         });
 
     }
+    private void showDeleteConfirmationDialog(String imageId) {
+        new AlertDialog.Builder(this)
+                .setTitle("게시물 삭제")
+                .setMessage("이 게시물을 삭제하시겠습니까?")
+                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePost(imageId); // 사용자가 확인을 누를 경우 게시물 삭제
+                    }
+                })
+                .setNegativeButton("취소", null)
+                .show();
+    }
+    private void deletePost(String imageId) {
+        // Firebase Database에서 해당 게시물의 참조를 가져옵니다.
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
+
+        // 게시물을 삭제합니다.
+        postRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // 삭제가 성공적으로 완료되었을 때
+                    Toast.makeText(DetailActivity.this, "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish(); // 액티비티 종료 또는 다른 화면으로 이동
+                })
+                .addOnFailureListener(e -> {
+                    // 삭제에 실패했을 때
+                    Toast.makeText(DetailActivity.this, "게시물 삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
     private void setupLikeButton(ImageButton button, String imageId) {
         DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
