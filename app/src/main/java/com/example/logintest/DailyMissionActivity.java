@@ -26,7 +26,7 @@ public class DailyMissionActivity extends AppCompatActivity {
     Button workoutMission;
     Button coffeeMission;
     Button earlyMorningMission;
-    Button missionBtn4;
+    Button communicationMission;
     Button missionBtn5;
     Button missionBtn6;
     Button missionBtn7;
@@ -35,9 +35,9 @@ public class DailyMissionActivity extends AppCompatActivity {
     private void updateMissionVisibility(int userLevel) {
         // 이 부분에서는 userLevel에 따라 미션 버튼의 가시성을 설정합니다.
         workoutMission.setVisibility(userLevel >= 1 ? View.VISIBLE : View.GONE);
-        coffeeMission.setVisibility(userLevel >= 2 ? View.VISIBLE : View.GONE);
-        earlyMorningMission.setVisibility(userLevel >= 3 ? View.VISIBLE : View.GONE);
-        missionBtn4.setVisibility(userLevel >= 4 ? View.VISIBLE : View.GONE);
+        coffeeMission.setVisibility(userLevel >= 3 ? View.VISIBLE : View.GONE);
+        earlyMorningMission.setVisibility(userLevel >= 1 ? View.VISIBLE : View.GONE);
+        communicationMission.setVisibility(userLevel >= 2 ? View.VISIBLE : View.GONE);
         missionBtn5.setVisibility(userLevel >= 5 ? View.VISIBLE : View.GONE);
         missionBtn6.setVisibility(userLevel >= 6 ? View.VISIBLE : View.GONE);
         missionBtn7.setVisibility(userLevel >= 7 ? View.VISIBLE : View.GONE);
@@ -52,7 +52,7 @@ public class DailyMissionActivity extends AppCompatActivity {
         workoutMission = (Button) findViewById(R.id.missionBtn1);
         coffeeMission = (Button) findViewById(R.id.missionBtn2);
         earlyMorningMission = (Button) findViewById(R.id.missionBtn3);
-        missionBtn4 = (Button) findViewById(R.id.missionBtn4);
+        communicationMission = (Button) findViewById(R.id.missionBtn4);
         missionBtn5 = (Button) findViewById(R.id.missionBtn5);
         missionBtn6 = (Button) findViewById(R.id.missionBtn6);
         missionBtn7 = (Button) findViewById(R.id.missionBtn7);
@@ -142,6 +142,14 @@ public class DailyMissionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, WakeUpActivity.class);
+                startActivity(intent);
+            }
+        });
+        communicationMission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CoffeeMissionActivity 시작하는 Intent
+                Intent intent = new Intent(DailyMissionActivity.this, CommunicationMission.class);
                 startActivity(intent);
             }
         });
