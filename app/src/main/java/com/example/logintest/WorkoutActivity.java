@@ -1,6 +1,11 @@
 package com.example.logintest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.widget.Toast;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +19,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.widget.ProgressBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,15 +41,51 @@ import java.util.Locale;
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
+    private BroadcastReceiver stepUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("com.example.logintest.STEP_UPDATE".equals(intent.getAction())) {
+                steps = intent.getIntExtra("steps", 0);
+                updateStepCounter();
+            }
+        }
+    };
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = getSharedPreferences("StepCounterPrefs", MODE_PRIVATE);
+        steps = prefs.getInt("steps", 0);
+        updateStepCounter();
+
+        // Intent 필터를 사용하여 브로드캐스트 리시버 등록
+        IntentFilter filter = new IntentFilter("com.example.logintest.STEP_UPDATE");
+        registerReceiver(stepUpdateReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 브로드캐스트 리시버 등록 해제
+        unregisterReceiver(stepUpdateReceiver);
+    }
+
+
     private TextView stepCounterTextView;
     private Button missionCompleteButton;
+    private Button startTrackingButton, stopTrackingButton;
+
     private ProgressBar stepProgressBar;
     private int steps = 0;
     private String currentDate;
+    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+        checkAndRequestPermissions();
+
         currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         stepCounterTextView = findViewById(R.id.stepCounter);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
@@ -50,7 +94,25 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         checkMissionStatusAndUpdateButton();
         // 초기 버튼 상태를 비활성화합니다.
         //missionCompleteButton.setEnabled(false);
+        startTrackingButton = findViewById(R.id.startTrackingButton);
+        stopTrackingButton = findViewById(R.id.stopTrackingButton);
+        missionCompleteButton = findViewById(R.id.missionCompleteButton);
 
+        startTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent serviceIntent = new Intent(WorkoutActivity.this, StepCounterService.class);
+                startService(serviceIntent);
+            }
+        });
+
+        stopTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent serviceIntent = new Intent(WorkoutActivity.this, StepCounterService.class);
+                stopService(serviceIntent);
+            }
+        });
         // 걸음 수를 수동으로 증가시키는 버튼
         Button btnIncreaseSteps = findViewById(R.id.btnIncreaseSteps);
         btnIncreaseSteps.setOnClickListener(new View.OnClickListener() {
@@ -126,22 +188,7 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
-        } else {
-            Toast.makeText(this, "Step counter sensor not available!", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -251,6 +298,25 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                 // 오류 처리
             }
         });
+    }
+    private void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACTIVITY_RECOGNITION},
+                    PERMISSION_REQUEST_ACTIVITY_RECOGNITION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 부여되었을 때 필요한 작업 수행 (예: 센서 초기화)
+            } else {
+                // 사용자가 권한을 거부했을 때의 처리 (예: 기능 제한 또는 안내 메시지 표시)
+            }
+        }
     }
 
 }

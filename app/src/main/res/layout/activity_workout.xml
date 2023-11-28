@@ -101,27 +101,56 @@
             android:layout_height="wrap_content"
             android:max="1000"
             android:layout_marginBottom="50dp"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomNavigationView"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 새로 추가된 버튼들 -->
+        <Button
+            android:id="@+id/startTrackingButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="걸음 수 추적 시작"
+            android:background="@drawable/mission_line_background"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/stopTrackingButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="걸음 수 추적 중지"
+            android:background="@drawable/mission_line_background"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- 기존의 미션 완료 버튼 -->
         <Button
             android:id="@+id/missionCompleteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="미션 완료"
             android:enabled="true"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="10dp"
             android:background="@drawable/mission_color_background"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
+        <!-- 기타 기존 요소들 -->
         <Button
             android:id="@+id/btnIncreaseSteps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="센서 테스트용버튼"
-            android:background="@drawable/mission_line_background"/>
+            android:background="@drawable/mission_line_background"
+            android:visibility="gone"/>
 
     </LinearLayout>
+
+
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
