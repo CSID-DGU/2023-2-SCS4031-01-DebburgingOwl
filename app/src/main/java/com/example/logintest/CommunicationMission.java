@@ -44,35 +44,6 @@ public class CommunicationMission extends AppCompatActivity {
         checkMissionStatusAndUpdateButton();
         missionCompleteButton.setOnClickListener(v -> {
 
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-            bottomNavigationView.setSelectedItemId(R.id.daily_mission);
-
-            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-                Intent intent;
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.board) {
-                    intent = new Intent(CommunicationMission.this, BoardActivity.class);
-                    startActivity(intent);
-                } else if (itemId == R.id.community) {
-                    return true;
-                } else if (itemId == R.id.home) {
-                    intent = new Intent(CommunicationMission.this, MainActivity.class);
-                    startActivity(intent);
-                } else if (itemId == R.id.daily_mission) {
-                    intent = new Intent(CommunicationMission.this, DailyMissionActivity.class);
-                    startActivity(intent);
-                } else if (itemId == R.id.mypage) {
-                    intent = new Intent(CommunicationMission.this, MyPageActivity.class);
-                    startActivity(intent);
-
-
-                } else {
-                    return false;
-                }
-                return true;
-            });
-            // TODO: 미션 완료 후 처리 로직 추가
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference communicateMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
                     .child(userId)
@@ -90,6 +61,35 @@ public class CommunicationMission extends AppCompatActivity {
         });
 
         loadUserActivity();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.daily_mission);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(CommunicationMission.this, BoardActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.community) {
+                intent = new Intent(CommunicationMission.this, CommunityActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.home) {
+                intent = new Intent(CommunicationMission.this, MainActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(CommunicationMission.this, DailyMissionActivity.class);
+                startActivity(intent);
+            } else if (itemId == R.id.mypage) {
+                intent = new Intent(CommunicationMission.this, MyPageActivity.class);
+                startActivity(intent);
+
+
+            } else {
+                return false;
+            }
+            return true;
+        });
     }
 
     private void loadUserActivity() {
@@ -197,12 +197,12 @@ public class CommunicationMission extends AppCompatActivity {
     }
     private void checkMissionStatusAndUpdateButton() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference commnicateMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+        DatabaseReference communicateMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
                 .child(userId)
                 .child(currentDate)
                 .child("communicate");
 
-        commnicateMissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        communicateMissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -210,7 +210,7 @@ public class CommunicationMission extends AppCompatActivity {
                     if (isMissionComplete != null && isMissionComplete) {
                         missionCompleteButton.setEnabled(false);
                     } else {
-                        missionCompleteButton.setEnabled(true);
+                        loadUserActivity();
                     }
                 } else {
                     missionCompleteButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)

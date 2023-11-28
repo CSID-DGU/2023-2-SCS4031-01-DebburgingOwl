@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,7 +31,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     private void registerStepCounterSensor() {
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
@@ -40,7 +41,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle("걸음 수 추적 중")
                 .setContentText("걸음 수를 추적하고 있습니다.")
-                .setSmallIcon(R.drawable.ic_home)
+                .setSmallIcon(R.drawable.ic_workout)
                 .build();
 
         startForeground(1, notification);
@@ -48,12 +49,12 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     private String createNotificationChannel() {
 
-            String channelId = "step_counter_service_channel";
-            String channelName = "Step Counter Service Channel";
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-            return channelId;
+        String channelId = "step_counter_service_channel";
+        String channelName = "Step Counter Service Channel";
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW);
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(channel);
+        return channelId;
 
     }
 
@@ -77,12 +78,20 @@ public class StepCounterService extends Service implements SensorEventListener {
         Notification notification = new NotificationCompat.Builder(this, "step_counter_service_channel")
                 .setContentTitle("걸음 수 추적 중")
                 .setContentText("걸음 수: " + steps)
-                .setSmallIcon(R.drawable.ic_home)
-                //todo icon 수정해야함.
+                .setSmallIcon(R.drawable.ic_workout)
+
                 .build();
+
+        SharedPreferences prefs = getSharedPreferences("StepCounterPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("steps", steps);
+        editor.apply();
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, notification);
+        Intent intent = new Intent("com.example.logintest.STEP_UPDATE");
+        intent.putExtra("steps", steps);
+        sendBroadcast(intent);
     }
 
     @Override
