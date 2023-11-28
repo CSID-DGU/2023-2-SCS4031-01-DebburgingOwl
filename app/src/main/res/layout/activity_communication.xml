@@ -51,6 +51,7 @@
         android:orientation="vertical"
         android:layout_below="@id/missionExplanation"
         android:padding="20dp"
+        android:layout_margin="20dp"
         android:background="@drawable/mission_line_background">
 
         <TextView

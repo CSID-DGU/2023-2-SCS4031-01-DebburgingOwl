@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="20dp"
-            android:text="목표 걸음 수는 500보 입니다!"
+            android:text="목표 걸음 수는 1000보 입니다!"
             android:textColor="#ffffff"
             android:textSize="15sp" />
 
