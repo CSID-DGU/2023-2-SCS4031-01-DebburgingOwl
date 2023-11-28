@@ -97,6 +97,9 @@
         <activity
             android:name=".WorkoutActivity"
             android:exported="false" />
+        <activity
+            android:name=".CommunicationMission"
+            android:exported="false" />
 
         <service
             android:name=".StepCounterService"
