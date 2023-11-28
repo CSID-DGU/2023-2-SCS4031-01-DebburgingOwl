@@ -1,5 +1,6 @@
 package com.example.logintest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.logintest.UserActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,23 +29,64 @@ public class CommunicationMission extends AppCompatActivity {
     private TextView tvLikesCount, tvCommentsCount;
     private Button missionCompleteButton;
     private static final int MISSION_TARGET = 3; // 미션 목표값 설정
+    private String currentDate; // 멤버 변수로 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_communication);
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         tvLikesCount = findViewById(R.id.tvLikesCount);
         tvCommentsCount = findViewById(R.id.tvCommentsCount);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
-
-        missionCompleteButton.setEnabled(false); // 초기에는 버튼을 비활성화
+        missionCompleteButton.setEnabled(false);
+        checkMissionStatusAndUpdateButton();
         missionCompleteButton.setOnClickListener(v -> {
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+            bottomNavigationView.setSelectedItemId(R.id.daily_mission);
+
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                Intent intent;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.board) {
+                    intent = new Intent(CommunicationMission.this, BoardActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.id.community) {
+                    return true;
+                } else if (itemId == R.id.home) {
+                    intent = new Intent(CommunicationMission.this, MainActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.id.daily_mission) {
+                    intent = new Intent(CommunicationMission.this, DailyMissionActivity.class);
+                    startActivity(intent);
+                } else if (itemId == R.id.mypage) {
+                    intent = new Intent(CommunicationMission.this, MyPageActivity.class);
+                    startActivity(intent);
+
+
+                } else {
+                    return false;
+                }
+                return true;
+            });
             // TODO: 미션 완료 후 처리 로직 추가
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            // 예: rewardUser();
+            DatabaseReference communicateMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                    .child(userId)
+                    .child(currentDate)
+                    .child("communicate");
+            communicateMissionRef.setValue(true); // 미션 완료 상태로 업데이트
+
+            missionCompleteButton.setEnabled(false); // 버튼 비활성화
+
             updateExp(userId, 100);//경험치
             updatePoint(userId,100);//포인트
+
+
+
         });
 
         loadUserActivity();
@@ -152,4 +195,33 @@ public class CommunicationMission extends AppCompatActivity {
             }
         });
     }
+    private void checkMissionStatusAndUpdateButton() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference commnicateMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                .child(userId)
+                .child(currentDate)
+                .child("communicate");
+
+        commnicateMissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean isMissionComplete = dataSnapshot.getValue(Boolean.class);
+                    if (isMissionComplete != null && isMissionComplete) {
+                        missionCompleteButton.setEnabled(false);
+                    } else {
+                        missionCompleteButton.setEnabled(true);
+                    }
+                } else {
+                    missionCompleteButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
 }

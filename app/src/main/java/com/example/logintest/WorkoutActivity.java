@@ -10,6 +10,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ProgressBar;
@@ -22,6 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -30,17 +37,17 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     private Button missionCompleteButton;
     private ProgressBar stepProgressBar;
     private int steps = 0;
-
+    private String currentDate;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
-
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         stepCounterTextView = findViewById(R.id.stepCounter);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
         stepProgressBar = findViewById(R.id.stepProgressBar);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
+        checkMissionStatusAndUpdateButton();
         // 초기 버튼 상태를 비활성화합니다.
         //missionCompleteButton.setEnabled(false);
 
@@ -61,6 +68,13 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                 if (steps >= 1000) {
                     // 경험치를 업데이트하는 메소드 호출
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference workoutMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                            .child(userId)
+                            .child(currentDate)
+                            .child("workout");
+                    workoutMissionRef.setValue(true); // 미션 완료 상태로 업데이트
+
+                    missionCompleteButton.setEnabled(false); // 버튼 비활성화
                     updateExp(userId, 100);
                     updatePoint(userId,100);
 
@@ -209,4 +223,34 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             }
         });
     }
+    private void checkMissionStatusAndUpdateButton() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference workoutissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                .child(userId)
+                .child(currentDate)
+                .child("workout");
+
+        workoutissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean isMissionComplete = dataSnapshot.getValue(Boolean.class);
+                    if (isMissionComplete != null && isMissionComplete) {
+                        missionCompleteButton.setEnabled(false);
+                    } else {
+                        missionCompleteButton.setEnabled(true);
+                    }
+                } else {
+                    missionCompleteButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
 }

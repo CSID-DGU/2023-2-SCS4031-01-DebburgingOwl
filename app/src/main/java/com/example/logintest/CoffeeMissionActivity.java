@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -51,13 +52,17 @@ public class CoffeeMissionActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private static final int TAKE_PHOTO = 2;
 
+    private  Button recognizeTextButton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coffee_mission);
 
-        Button recognizeTextButton = findViewById(R.id.recognizeTextButton);
 
+        recognizeTextButton = findViewById(R.id.recognizeTextButton);
+        checkMissionStatusAndUpdateButton();
 
         recognizeTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +208,15 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                                 updateExp(userId, 100);//경험치
                                 updatePoint(userId,100);//포인트
                                 Toast.makeText(getApplicationContext(), "미션 성공!!", Toast.LENGTH_SHORT).show();
+                                DatabaseReference coffeeMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                                        .child(userId)
+                                        .child(currentDate)
+                                        .child("coffee");
+                                coffeeMissionRef.setValue(true); // 미션 완료 상태로 업데이트
+
+                                recognizeTextButton.setEnabled(false); // 버튼 비활성화
+
+
                                 Intent intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -292,6 +306,35 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                     // 트랜잭션이 실패했습니다.
                     Toast.makeText(CoffeeMissionActivity.this, "경험치 및 레벨 업데이트에 실패했습니다: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+    private void checkMissionStatusAndUpdateButton() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference coffeeMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                .child(userId)
+                .child(currentDate)
+                .child("coffee");
+
+        coffeeMissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean isCoffeeMissionComplete = dataSnapshot.getValue(Boolean.class);
+                    if (isCoffeeMissionComplete != null && isCoffeeMissionComplete) {
+                        recognizeTextButton.setEnabled(false);
+                    } else {
+                        recognizeTextButton.setEnabled(true);
+                    }
+                } else {
+                    recognizeTextButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
             }
         });
     }

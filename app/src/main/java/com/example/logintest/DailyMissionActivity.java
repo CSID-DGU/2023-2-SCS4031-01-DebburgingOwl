@@ -20,6 +20,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class DailyMissionActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce = false;
     TextView missonRewardContent;
@@ -59,7 +65,7 @@ public class DailyMissionActivity extends AppCompatActivity {
 
         // 다른 버튼들에 대한 onClickListener 설정이 필요하면 여기에 추가합니다.
         // 예: missionBtn3.setOnClickListener(...);
-
+        initializeDailyMissionData();
         // 사용자 인증 정보를 가져옵니다.
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -175,4 +181,31 @@ public class DailyMissionActivity extends AppCompatActivity {
             }
         }, 2000); // 2초 동안 대기
     }
+    private void initializeDailyMissionData() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference userMissionsRef = FirebaseDatabase.getInstance().getReference("userMissions").child(userId).child(currentDate);
+
+        userMissionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // 날짜 노드가 없으면 새로운 노드를 생성합니다.
+                    Map<String, Object> missions = new HashMap<>();
+                    missions.put("earlymorning", false);
+                    missions.put("communicate", false);
+                    missions.put("workout", false);
+                    missions.put("coffee", false);
+
+                    userMissionsRef.setValue(missions); // 초기 미션 상태 설정
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
 }
