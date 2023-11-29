@@ -2,6 +2,7 @@ package com.example.logintest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,11 +34,17 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -48,6 +56,7 @@ import java.io.InputStream;
 
 
 public class CoffeeMissionActivity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     private static final int PICK_IMAGE = 1;
     private static final int TAKE_PHOTO = 2;
@@ -60,7 +69,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coffee_mission);
 
-
+        checkAndRequestPermissions();
         recognizeTextButton = findViewById(R.id.recognizeTextButton);
         checkMissionStatusAndUpdateButton();
 
@@ -189,7 +198,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
 
-                        if (date != null && date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
+                        if (date != null){ //&& date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
 
                             // 한글 메뉴 이름 추출 및 비교
                             Pattern menuPattern = Pattern.compile("[가-힣]+");
@@ -337,6 +346,46 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 // 오류 처리
             }
         });
+    }
+    private void checkAndRequestPermissions() {
+        String[] permissions = new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+        };
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(permission);
+            }
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            HashMap<String, Integer> permissionsResult = new HashMap<>();
+            int deniedCount = 0;
+
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    permissionsResult.put(permissions[i], grantResults[i]);
+                    deniedCount++;
+                }
+            }
+
+            if (deniedCount > 0) {
+                // 하나 이상의 권한이 거부된 경우, 사용자에게 추가 설명을 제공하거나 앱 기능의 제한을 처리합니다.
+            } else {
+                // 모든 권한이 승인된 경우, 필요한 작업을 계속 진행합니다.
+            }
+        }
     }
 
 }
