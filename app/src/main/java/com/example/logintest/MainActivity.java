@@ -1,5 +1,6 @@
 package com.example.logintest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -7,21 +8,40 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import android.os.Handler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     Handler handler;
     ViewPager2 viewPager;
     Runnable slideRunnable;
+
+    WebView podcastWebView;
+    DatabaseReference databaseReference;
     // 상수 추가
     private static final long DELAY_MS = 3000;
     private static final long PERIOD_MS = 3000;
@@ -34,6 +54,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.home);
+        // LayoutInflater 가져오기
+        LayoutInflater inflater = getLayoutInflater();
+
+        // WebView 초기화
+        podcastWebView = findViewById(R.id.podcastWebView);
+        WebSettings webSettings = podcastWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true); // JavaScript 활성화
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        loadPodcasts();
+        loadPodcasts();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Intent intent;
@@ -94,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(this, PERIOD_MS);
             }
         };
+
+
     }
 
     @Override
@@ -125,6 +158,56 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce = false;
             }
         }, 3000); // 2초 동안 대기
+    }
+
+    private void loadPodcasts() {
+        // "podcasts" 그룹 내의 데이터를 읽어오기
+        databaseReference.child("podcasts").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> podcastLinks = new ArrayList<>();
+
+                // 데이터를 리스트에 추가
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String youtubeLink = snapshot.child("youtubeLink").getValue(String.class);
+                    podcastLinks.add(youtubeLink);
+                }
+
+                // WebView에 첫 번째 유튜브 링크 로드
+                if (!podcastLinks.isEmpty()) {
+                    String firstYoutubeLink = podcastLinks.get(0);
+                    loadYoutubeVideo(firstYoutubeLink);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("MainActivity", "Error reading data from Firebase", error.toException());
+                Toast.makeText(MainActivity.this, "Error reading data from Firebase", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void loadYoutubeVideo(String youtubeLink) {
+        // 유튜브 동영상을 로드하기 위한 코드
+        String youtubeVideoUrl = "https://www.youtube.com/embed/" + extractVideoId(youtubeLink);
+        String html = "<html><body><iframe width=\"100%\" height=\"100%\" src=\"" + youtubeVideoUrl + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+        podcastWebView.loadData(html, "text/html", null);
+    }
+
+    private String extractVideoId(String youtubeLink) {
+        // 유튜브 링크에서 동영상 ID 추출
+        String videoId = "";
+        if (youtubeLink != null && youtubeLink.trim().length() > 0) {
+            String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed&v=|%2Fv%2F|(?<=youtu.be%2F|youtu.be%2F|.be%2F|(?<=\\?v=|&v=|\\?feature=player_embedded&v=|%2Fvideos%2F|embed\\/|youtu.be\\/|%2Fv%2F)|/videos/|embed\\/|youtu.be\\/|(?<=\\?v=|&v=|\\?feature=player_embedded&v=|%2Fvideos%2F|embed\\/|youtu.be\\/|%2Fv%2F)|/videos/|embed\\/|youtu.be\\/|%2Fv%2F))([\\w-]{11})";
+            Pattern compiledPattern = Pattern.compile(pattern);
+            Matcher matcher = compiledPattern.matcher(youtubeLink);
+            if (matcher.find()) {
+                videoId = matcher.group();
+            }
+        }
+        return videoId;
     }
 
 
