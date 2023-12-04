@@ -16,6 +16,7 @@
         android:textStyle="bold"
         android:padding="15dp"
         android:layout_marginBottom="5dp"/>
+
     <LinearLayout
         android:id="@+id/missionExplanation"
         android:layout_width="match_parent"
@@ -43,32 +44,37 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/missionContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_below="@id/missionExplanation"
-        android:padding="20dp"
-        android:layout_margin="20dp"
-        android:background="@drawable/mission_line_background">
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/mission_line_background"
+        android:orientation="vertical"
+        android:padding="50dp">
 
         <TextView
             android:id="@+id/tvLikesCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="오늘의 좋아요 수: 0"
-            android:textSize="18sp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:text="오늘의 좋아요 수 : 0"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tvCommentsCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="오늘의 댓글 수: 0"
-            android:textSize="18sp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="오늘의 댓글 수 : 0"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <Button
