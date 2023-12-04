@@ -23,9 +23,8 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
-            android:layout_weight="1"
             android:background="@drawable/line_background"/>
 
         <TextView
@@ -33,13 +32,12 @@
             android:layout_height="wrap_content"
             android:text="인기 게시글"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="20dp"/>
 
         <ImageView
             android:id="@+id/imagePlaceholder"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="200dp"
             android:background="#E0E0E0"
             android:contentDescription="@string/app_name"
             android:layout_marginTop="10dp"/>
@@ -49,15 +47,13 @@
             android:layout_height="wrap_content"
             android:text="최신 팟캐스트"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="22dp"/>
 
         <WebView
             android:id="@+id/podcastWebView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="210dp"
+            android:layout_marginTop="10dp"
             android:background="#E0E0E0"
             android:contentDescription="@string/app_name"
             android:src="@android:drawable/ic_media_play" />

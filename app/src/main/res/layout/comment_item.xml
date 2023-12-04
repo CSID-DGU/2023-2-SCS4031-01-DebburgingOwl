@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="10dp"
+    android:layout_marginLeft="15dp">
 
     <TextView
         android:id="@+id/textViewNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="280dp"
+        android:text="Nickname"
         android:textSize="16sp"
-        android:text="Nickname" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/textViewNickname"
         android:text="Comment text here"
         android:textSize="14sp"/>
 
@@ -24,6 +29,7 @@
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewComment"
         android:textSize="12sp"
         android:text="Date" />
 
@@ -31,8 +37,11 @@
         android:id="@+id/buttonDeleteComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/textViewNickname"
+        android:layout_alignParentRight="true"
         android:src="@drawable/ic_delete"
-        android:visibility="gone"/>
+        android:background="@null"
+        android:visibility="visible"/>
 
 
-</LinearLayout>
+</RelativeLayout>
