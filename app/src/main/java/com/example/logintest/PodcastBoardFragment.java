@@ -59,22 +59,28 @@ public class PodcastBoardFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        List<String> podcastTitles = new ArrayList<>(); // 수정된 부분
+                        List<Podcast> podcastList = new ArrayList<>();
 
                         // 데이터를 리스트에 추가
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String title = snapshot.child("title").getValue(String.class); // 수정된 부분
-                            podcastTitles.add(title); // 수정된 부분
+                            String title = snapshot.child("title").getValue(String.class);
+                            String description = snapshot.child("description").getValue(String.class);
+                            String userID = snapshot.child("userID").getValue(String.class);
+                            String youtubeLink = snapshot.child("youtubeLink").getValue(String.class);
+
+                            // Podcast 객체를 생성하여 리스트에 추가
+                            Podcast podcast = new Podcast(title, description, userID, youtubeLink);
+                            podcastList.add(podcast);
                         }
 
                         // 리스트뷰에 데이터 표시
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, podcastTitles); // 수정된 부분
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, getTitles(podcastList));
                         podcastListView.setAdapter(adapter);
 
                         // WebView에 첫 번째 유튜브 링크 로드
-                        if (!podcastTitles.isEmpty()) {
-                            String firstTitle = podcastTitles.get(0);
-                            loadYoutubeVideo(firstTitle); // 수정된 부분
+                        if (!podcastList.isEmpty()) {
+                            Podcast firstItem = podcastList.get(0);
+                            loadYoutubeVideo(firstItem.getYoutubeLink());
                         }
                     }
 
@@ -84,6 +90,15 @@ public class PodcastBoardFragment extends Fragment {
                         Toast.makeText(requireContext(), "Error reading data from Firebase", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // Podcast 리스트에서 title 목록을 추출하는 메서드
+    private List<String> getTitles(List<Podcast> podcasts) {
+        List<String> titles = new ArrayList<>();
+        for (Podcast podcast : podcasts) {
+            titles.add(podcast.getTitle());
+        }
+        return titles;
     }
 
 
