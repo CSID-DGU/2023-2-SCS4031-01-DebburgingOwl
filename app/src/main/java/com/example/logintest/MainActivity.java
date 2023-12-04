@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         loadPodcasts();
-        loadPodcasts();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Intent intent;
