@@ -33,9 +33,12 @@
         android:paddingLeft="20dp"
         android:textSize="18dp" />
 
+
+
     <ListView
-        android:id="@+id/PodcastListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            android:id="@+id/PodcastListView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
 
 </LinearLayout>

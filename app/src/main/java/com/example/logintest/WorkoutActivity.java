@@ -2,10 +2,12 @@ package com.example.logintest;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,6 +44,8 @@ import java.util.Locale;
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
     private String lastDateTracked;
     private boolean isReceiverRegistered = false;
+    private Drawable originalButtonBackground;
+    private String originalButtonText;
 
     private SensorManager sensorManager;
     private BroadcastReceiver stepUpdateReceiver = new BroadcastReceiver() {
@@ -107,14 +112,16 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_workout);
         checkAndRequestPermissions();
 
+
         currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         stepCounterTextView = findViewById(R.id.stepCounter);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
+        originalButtonBackground = missionCompleteButton.getBackground();
+        originalButtonText = missionCompleteButton.getText().toString();
         stepProgressBar = findViewById(R.id.stepProgressBar);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         checkMissionStatusAndUpdateButton();
-        // 초기 버튼 상태를 비활성화합니다.
-        //missionCompleteButton.setEnabled(false);
+
         startTrackingButton = findViewById(R.id.startTrackingButton);
         stopTrackingButton = findViewById(R.id.stopTrackingButton);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
@@ -162,16 +169,27 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                     missionCompleteButton.setEnabled(false); // 버튼 비활성화
                     updateExp(userId, 100);
                     updatePoint(userId,100);
+                    // AlertDialog를 사용하여 팝업 메시지 표시
+                    new AlertDialog.Builder(WorkoutActivity.this)
+                            .setTitle("미션 완료!")
+                            .setMessage("미션을 성공적으로 완료하셨습니다.")
+                            .setPositiveButton("최고에요!", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    restartActivity(); // 액티비티 재시작
+                                }
+                            })
+                            .show();
 
                     // 메인 액티비티로 이동
-                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
                 } else {
                     Toast.makeText(WorkoutActivity.this, "아직 " + (1000 - steps) + " 걸음이 부족해요!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         // 바텀 네비게이션 뷰 설정
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -213,7 +231,11 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
-
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -305,26 +327,35 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     private void checkMissionStatusAndUpdateButton() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        DatabaseReference workoutissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+        DatabaseReference workoutmissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
                 .child(userId)
                 .child(currentDate)
                 .child("workout");
 
-        workoutissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        workoutmissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Boolean isMissionComplete = dataSnapshot.getValue(Boolean.class);
                     if (isMissionComplete != null && isMissionComplete) {
                         missionCompleteButton.setEnabled(false);
+                        missionCompleteButton.setBackground(ContextCompat.getDrawable(WorkoutActivity.this, R.drawable.mission_color_background_complete)); // 새로운 배경 적용
+                        missionCompleteButton.setText("내일 또 만나요!"); // 버튼 텍스트를 "CLEAR"로 변경
                     } else {
                         missionCompleteButton.setEnabled(true);
+                        restoreButtonToOriginalState();
+
                     }
                 } else {
-                    missionCompleteButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                    missionCompleteButton.setEnabled(true);
+                    restoreButtonToOriginalState();// 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
                 }
             }
-
+            private void restoreButtonToOriginalState() {
+                missionCompleteButton.setEnabled(true);
+                missionCompleteButton.setBackground(ContextCompat.getDrawable(WorkoutActivity.this, R.drawable.mission_color_background)); // 원래 배경으로 복원
+                missionCompleteButton.setText(originalButtonText); // 원래 텍스트로 복원
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // 오류 처리

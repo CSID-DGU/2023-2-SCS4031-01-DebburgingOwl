@@ -103,6 +103,15 @@
         <activity
             android:name=".CommunicationMission"
             android:exported="false" />
+        <activity
+            android:name=".DiaryListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryWriteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryDetailActivity"
+            android:exported="false" />
 
         <service
             android:name=".StepCounterService"

@@ -24,7 +24,7 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView gradeTextView, nickname, point, people, userType;
     private DatabaseReference userRef;
     private boolean doubleBackToExitPressedOnce = false;
-    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreButton;
+    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreButton, myDiaryBtn;
 
     private int totalLikeCount = 0;
 
@@ -37,6 +37,14 @@ public class MyPageActivity extends AppCompatActivity {
         point = findViewById(R.id.myPage_point);
         people = findViewById(R.id.myPage_people);
         myPageEditButton = findViewById(R.id.myPageEditBtn);
+        myDiaryBtn = findViewById(R.id.myDiaryBtn);
+        myDiaryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyPageActivity.this, DiaryListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {

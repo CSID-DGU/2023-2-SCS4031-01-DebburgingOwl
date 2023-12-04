@@ -2,24 +2,25 @@ package com.example.logintest;
 
 public class ImageModel {
     private String imageUrl;
-    private boolean publicStatus; // 필드 이름 변경
+    private boolean publicStatus;
     private String uploader;
-    private String imageId; // 고유 ID 필드 추가
+    private String imageId;
+    private int likesCount; // 좋아요 수를 나타내는 필드 추가
 
-
-    // Constructor
+    // Default Constructor
     public ImageModel() {
-        // Default constructor required for calls to DataSnapshot.getValue(ImageModel.class)
+        // Firebase 데이터 스냅샷을 위한 기본 생성자
     }
 
-    // Parameterized constructor
+    // Parameterized Constructor
     public ImageModel(String imageUrl, boolean publicStatus, String uploader) {
         this.imageUrl = imageUrl;
         this.publicStatus = publicStatus;
         this.uploader = uploader;
+        this.likesCount = 0; // 기본값으로 0 설정
     }
 
-    // Getters and setters
+    // Getters and Setters
     public String getImageUrl() {
         return imageUrl;
     }
@@ -50,5 +51,13 @@ public class ImageModel {
 
     public void setImageId(String imageId) {
         this.imageId = imageId;
+    }
+
+    public int getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 }
