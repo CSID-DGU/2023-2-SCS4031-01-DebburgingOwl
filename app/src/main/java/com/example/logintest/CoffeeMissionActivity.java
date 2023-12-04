@@ -4,6 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -57,6 +60,9 @@ import java.io.InputStream;
 
 public class CoffeeMissionActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
+    private Drawable originalButtonBackground;
+    private String originalButtonText;
+
 
     private static final int PICK_IMAGE = 1;
     private static final int TAKE_PHOTO = 2;
@@ -71,7 +77,12 @@ public class CoffeeMissionActivity extends AppCompatActivity {
 
         checkAndRequestPermissions();
         recognizeTextButton = findViewById(R.id.recognizeTextButton);
+        originalButtonBackground = recognizeTextButton.getBackground();
+        originalButtonText = recognizeTextButton.getText().toString();
+
+
         checkMissionStatusAndUpdateButton();
+
 
         recognizeTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +110,9 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 intent = new Intent(CoffeeMissionActivity.this, MainActivity.class);
                 startActivity(intent);
             } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(CoffeeMissionActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+
                 // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
                 return true;
             } else if (itemId == R.id.mypage) {
@@ -212,11 +226,11 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                             }
 
                             if (matchedMenu != null) {
-                                resultTextView.setText("주문하신 " + matchedMenu + " 맛있게 드세요!" );
+                                resultTextView.setText("주문하신 " + matchedMenu + " 맛있게 드세요!");
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                updateExp(userId, 100);//경험치
-                                updatePoint(userId,100);//포인트
-                                Toast.makeText(getApplicationContext(), "미션 성공!!", Toast.LENGTH_SHORT).show();
+                                updateExp(userId, 100); // 경험치
+                                updatePoint(userId, 100); // 포인트
+
                                 DatabaseReference coffeeMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
                                         .child(userId)
                                         .child(currentDate)
@@ -225,10 +239,22 @@ public class CoffeeMissionActivity extends AppCompatActivity {
 
                                 recognizeTextButton.setEnabled(false); // 버튼 비활성화
 
+                                // AlertDialog를 사용하여 팝업 메시지 표시
+                                new AlertDialog.Builder(CoffeeMissionActivity.this)
+                                        .setTitle("미션 완료!")
+                                        .setMessage("미션을 성공적으로 완료하셨습니다.")
+                                        .setPositiveButton("최고에요!", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                restartActivity(); // 액티비티 재시작
+                                            }
+                                        })
+                                        .show();
 
-                                Intent intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
-                                startActivity(intent);
-                                finish();
+
+
+//                                Intent intent = new Intent(CoffeeMissionActivity.this, MyPageActivity.class);
+//                                startActivity(intent);
+//                                finish();
 
 
 
@@ -280,6 +306,12 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    // 현재 액티비티를 재시작하는 메서드
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     //경험치 올리는 메서드
@@ -333,11 +365,19 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                     Boolean isCoffeeMissionComplete = dataSnapshot.getValue(Boolean.class);
                     if (isCoffeeMissionComplete != null && isCoffeeMissionComplete) {
                         recognizeTextButton.setEnabled(false);
+                        recognizeTextButton.setBackground(ContextCompat.getDrawable(CoffeeMissionActivity.this, R.drawable.mission_color_background_complete)); // 새로운 배경 적용
+                        recognizeTextButton.setText("내일 또 만나요!"); // 버튼 텍스트를 "CLEAR"로 변경
                     } else {
                         recognizeTextButton.setEnabled(true);
+                        restoreButtonToOriginalState();
+
+                        // 필요한 경우, 여기서 버튼의 원래 상태(색상 및 텍스트)로 복원할 수 있습니다.
                     }
                 } else {
                     recognizeTextButton.setEnabled(true); // 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                    // 필요한 경우, 여기서 버튼의 원래 상태(색상 및 텍스트)로 복원할 수 있습니다.
+                    restoreButtonToOriginalState();
+
                 }
             }
 
@@ -346,6 +386,11 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                 // 오류 처리
             }
         });
+    }
+    private void restoreButtonToOriginalState() {
+        recognizeTextButton.setEnabled(true);
+        recognizeTextButton.setBackground(ContextCompat.getDrawable(CoffeeMissionActivity.this, R.drawable.mission_color_background)); // 원래 배경으로 복원
+        recognizeTextButton.setText(originalButtonText); // 원래 텍스트로 복원
     }
     private void checkAndRequestPermissions() {
         String[] permissions = new String[]{

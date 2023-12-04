@@ -118,6 +118,7 @@ public class DailyMissionActivity extends AppCompatActivity {
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(DailyMissionActivity.this, MyPageActivity.class);
                 startActivity(intent);
+
                 return true;
             } else {
                 return false;
@@ -131,6 +132,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // WorkoutActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, WorkoutActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 
@@ -140,6 +143,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, CoffeeMissionActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 
@@ -149,6 +154,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, WakeUpActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
         communicationMission.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +164,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, CommunicationMission.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 

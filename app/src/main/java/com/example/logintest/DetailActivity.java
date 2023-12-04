@@ -157,6 +157,8 @@ public class DetailActivity extends AppCompatActivity {
                 intent = new Intent(DetailActivity.this, DailyMissionActivity.class);
                 startActivity(intent);
             } else if (itemId == R.id.mypage) {
+                intent = new Intent(DetailActivity.this, MyPageActivity.class);
+                startActivity(intent);
                 return true;
 
 

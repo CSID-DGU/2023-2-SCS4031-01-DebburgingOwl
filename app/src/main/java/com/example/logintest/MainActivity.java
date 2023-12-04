@@ -73,20 +73,25 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.board) {
                 intent = new Intent(MainActivity.this, BoardActivity.class);
                 startActivity(intent);
+
                 return true;
             } else if (itemId == R.id.community) {
                 intent = new Intent(MainActivity.this, CommunityActivity.class);
                 startActivity(intent);
+
                 return true;
             } else if (itemId == R.id.home) {
                 return true;
             } else if (itemId == R.id.daily_mission) {
                 intent = new Intent(MainActivity.this, DailyMissionActivity.class);
                 startActivity(intent);
+
                 return true;
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(MainActivity.this, MyPageActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 return true;
             } else {
                 return false;
