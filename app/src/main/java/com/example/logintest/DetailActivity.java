@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Picasso 라이브러리 임포트
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -83,8 +84,10 @@ public class DetailActivity extends AppCompatActivity {
         String imageUrl = getIntent().getStringExtra("imageUrl");
         imageId = getIntent().getStringExtra("imageId"); // 인텐트에서 이미지 ID 가져오기
 
-        // Picasso를 사용하여 이미지 로딩 및 표시
-        Picasso.get().load(imageUrl).into(imageViewDetail);
+        // Picasso를 사용하여 이미지 로딩 및 표시$
+        Glide.with(this)
+                .load(imageUrl)
+                .into(imageViewDetail);
         switchPublicPrivate = findViewById(R.id.switchPublicPrivate);
 
 
@@ -224,6 +227,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupLikeButton(ImageButton button, String imageId) {
         DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
+        DatabaseReference imageRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // 좋아요 상태를 초기화
@@ -255,12 +259,16 @@ public class DetailActivity extends AppCompatActivity {
                         likesRef.child(userId).removeValue();
                         button.setImageResource(R.drawable.ic_like);
                         recordUserActivity(userId, false,true); // 좋아요 취소
+                        updateImageLikesCount(imageRef, false); // 좋아요 수 감소
+
 
                     } else {
                         // 좋아요를 누르지 않았다면 좋아요 추가 및 아이콘 변경
                         likesRef.child(userId).setValue(true);
                         button.setImageResource(R.drawable.ic_liked);
                         recordUserActivity(userId, true,true); // 좋아요 추가
+                        updateImageLikesCount(imageRef, true); // 좋아요 수 증가
+
 
                     }
                 }
@@ -272,7 +280,33 @@ public class DetailActivity extends AppCompatActivity {
             });
         });
     }
+    private void updateImageLikesCount(DatabaseReference imageRef, boolean increment) {
+        imageRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                ImageModel image = mutableData.getValue(ImageModel.class);
+                if (image == null) {
+                    return Transaction.success(mutableData);
+                }
 
+                int likesCount = image.getLikesCount();
+                if (increment) {
+                    likesCount++; // 좋아요 증가
+                } else {
+                    likesCount = Math.max(likesCount - 1, 0); // 좋아요 감소, 음수 방지
+                }
+                image.setLikesCount(likesCount);
+
+                mutableData.setValue(image);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // 트랜잭션이 완료된 후에 수행할 작업
+            }
+        });
+    }
     private void updateImagePublicStatus(boolean publicStatus) {
         if (imageId == null) {
             Toast.makeText(this, "Image ID is not available", Toast.LENGTH_SHORT).show();

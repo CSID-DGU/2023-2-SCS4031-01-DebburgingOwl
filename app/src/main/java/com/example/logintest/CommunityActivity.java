@@ -24,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -188,6 +190,8 @@ public class CommunityActivity extends AppCompatActivity {
                         databaseRef.child(modelId).setValue(imageModel).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(CommunityActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                                updateExp(userId, 1);
+                                updatePoint(userId,1);
                             } else {
                                 Toast.makeText(CommunityActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
                             }
@@ -225,11 +229,11 @@ public class CommunityActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     ImageModel imageModel = snapshot.getValue(ImageModel.class);
                     if (imageModel != null && imageModel.getPublicStatus()) {
-                        imageModel.setImageId(snapshot.getKey()); // 고유 ID 설정
-                        imageList.add(imageModel);
+                        imageModel.setImageId(snapshot.getKey());
+                        imageList.add(0, imageModel); // 리스트의 시작 부분에 추가
                     }
                 }
-                imageAdapter.notifyDataSetChanged(); // 데이터 변경 알림
+                imageAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -238,6 +242,7 @@ public class CommunityActivity extends AppCompatActivity {
             }
         });
     }
+
     private void checkAndRequestPermissions() {
         String[] permissions = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -277,5 +282,73 @@ public class CommunityActivity extends AppCompatActivity {
                 // 모든 권한이 승인된 경우, 필요한 작업을 계속 진행합니다.
             }
         }
+    }
+    private void updateExp(String userId, int additionalExp) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userRef = databaseReference.child("users").child(userId);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // 사용자의 현재 경험치를 추가합니다.
+                user.setExp(user.getExp() + additionalExp);
+
+                // 레벨을 업데이트합니다.
+                user.updateLevel();
+
+                // 변경된 사용자 객체를 데이터베이스에 다시 씁니다.
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (committed) {
+                    // 트랜잭션이 성공적으로 커밋되었습니다. UI를 업데이트하거나 사용자에게 알림을 줄 수 있습니다.
+
+                } else {
+                    // 트랜잭션이 실패했습니다.
+
+                }
+            }
+        });
+    }
+    private void updatePoint(String userId, int additionalPoint){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userRef = databaseReference.child("users").child(userId);
+
+        userRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                User user = mutableData.getValue(User.class);
+                if (user == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // 사용자의 현재 경험치를 추가합니다.
+                user.setPoint(user.getPoint() + additionalPoint);
+
+
+                // 변경된 사용자 객체를 데이터베이스에 다시 씁니다.
+                mutableData.setValue(user);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (committed) {
+                    // 트랜잭션이 성공적으로 커밋되었습니다. UI를 업데이트하거나 사용자에게 알림을 줄 수 있습니다.
+
+                } else {
+                    // 트랜잭션이 실패했습니다.
+
+                }
+            }
+        });
     }
 }
