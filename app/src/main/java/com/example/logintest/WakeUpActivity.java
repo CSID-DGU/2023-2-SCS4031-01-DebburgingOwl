@@ -63,18 +63,24 @@ public class WakeUpActivity extends AppCompatActivity {
             if (itemId == R.id.board) {
                 intent = new Intent(WakeUpActivity.this, BoardActivity.class);
                 startActivity(intent);
+
             } else if (itemId == R.id.community) {
                 intent = new Intent(WakeUpActivity.this, CommunityActivity.class);
                 startActivity(intent);
+
             } else if (itemId == R.id.home) {
                 intent = new Intent(WakeUpActivity.this, MainActivity.class);
                 startActivity(intent);
+
             } else if (itemId == R.id.daily_mission) {
-                // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
+                intent = new Intent(WakeUpActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
                 return true;
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(WakeUpActivity.this, MyPageActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             } else {
                 return false;
             }

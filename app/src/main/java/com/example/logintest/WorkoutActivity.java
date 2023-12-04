@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
+    private String lastDateTracked;
+    private boolean isReceiverRegistered = false;
 
     private SensorManager sensorManager;
     private BroadcastReceiver stepUpdateReceiver = new BroadcastReceiver() {
@@ -53,21 +55,40 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onResume() {
         super.onResume();
-
-        SharedPreferences prefs = getSharedPreferences("StepCounterPrefs", MODE_PRIVATE);
-        steps = prefs.getInt("steps", 0);
-        updateStepCounter();
-
-        // Intent 필터를 사용하여 브로드캐스트 리시버 등록
         IntentFilter filter = new IntentFilter("com.example.logintest.STEP_UPDATE");
         registerReceiver(stepUpdateReceiver, filter);
+        isReceiverRegistered = true;
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        listenForStepUpdates();
+    }
+    private void listenForStepUpdates() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference stepsRef = FirebaseDatabase.getInstance().getReference("steps")
+                .child(userId).child(currentDate);
+
+        stepsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    steps = dataSnapshot.getValue(Integer.class);
+                    updateStepCounter();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // 브로드캐스트 리시버 등록 해제
-        unregisterReceiver(stepUpdateReceiver);
+        if (isReceiverRegistered) {
+            unregisterReceiver(stepUpdateReceiver);
+            isReceiverRegistered = false;
+        }
     }
 
 
@@ -97,6 +118,8 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         startTrackingButton = findViewById(R.id.startTrackingButton);
         stopTrackingButton = findViewById(R.id.stopTrackingButton);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
+
+
 
         startTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +190,8 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             } else if (itemId == R.id.home) {
                 intent = new Intent(WorkoutActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
             } else if (itemId == R.id.daily_mission) {
                 // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
                 return true;
@@ -192,10 +217,17 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            steps = (int) event.values[0];
-            updateStepCounter();
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            // 각 걸음마다 카운트를 1 증가
+            steps++;
+            updateFirebaseSteps(steps);
         }
+    }
+    private void updateFirebaseSteps(int currentSteps) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference stepsRef = FirebaseDatabase.getInstance().getReference("steps")
+                .child(userId).child(currentDate);
+        stepsRef.setValue(currentSteps);
     }
 
     @Override
