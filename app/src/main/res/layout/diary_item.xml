@@ -21,4 +21,10 @@
         android:textColor="#666666"
         android:text="날짜" />
 
+    <!-- 구분선 추가 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC" />
+
 </LinearLayout>
