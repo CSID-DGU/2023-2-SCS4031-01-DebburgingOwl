@@ -112,6 +112,10 @@
         <activity
             android:name=".DiaryDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".DiaryMissionActivity"
+            android:exported="false" />
+
 
         <service
             android:name=".StepCounterService"

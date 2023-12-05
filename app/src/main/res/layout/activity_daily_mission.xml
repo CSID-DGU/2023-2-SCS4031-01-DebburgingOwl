@@ -120,7 +120,7 @@
                     android:id="@+id/missionBtn5"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:text="mission 5"
+                    android:text="기록해요"
                     android:textColor="#ffffff"
                     android:background="@drawable/mission_color_background"
                     android:layout_weight="1"

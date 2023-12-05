@@ -33,7 +33,7 @@ public class DailyMissionActivity extends AppCompatActivity {
     Button coffeeMission;
     Button earlyMorningMission;
     Button communicationMission;
-    Button missionBtn5;
+    Button diaryMission;
     Button missionBtn6;
     Button missionBtn7;
 
@@ -44,7 +44,7 @@ public class DailyMissionActivity extends AppCompatActivity {
         coffeeMission.setVisibility(userLevel >= 3 ? View.VISIBLE : View.GONE);
         earlyMorningMission.setVisibility(userLevel >= 1 ? View.VISIBLE : View.GONE);
         communicationMission.setVisibility(userLevel >= 2 ? View.VISIBLE : View.GONE);
-        missionBtn5.setVisibility(userLevel >= 5 ? View.VISIBLE : View.GONE);
+        diaryMission.setVisibility(userLevel >= 5 ? View.VISIBLE : View.GONE);
         missionBtn6.setVisibility(userLevel >= 6 ? View.VISIBLE : View.GONE);
         missionBtn7.setVisibility(userLevel >= 7 ? View.VISIBLE : View.GONE);
     }
@@ -59,7 +59,7 @@ public class DailyMissionActivity extends AppCompatActivity {
         coffeeMission = (Button) findViewById(R.id.missionBtn2);
         earlyMorningMission = (Button) findViewById(R.id.missionBtn3);
         communicationMission = (Button) findViewById(R.id.missionBtn4);
-        missionBtn5 = (Button) findViewById(R.id.missionBtn5);
+        diaryMission = (Button) findViewById(R.id.missionBtn5);
         missionBtn6 = (Button) findViewById(R.id.missionBtn6);
         missionBtn7 = (Button) findViewById(R.id.missionBtn7);
 
@@ -168,6 +168,16 @@ public class DailyMissionActivity extends AppCompatActivity {
 
             }
         });
+        diaryMission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CoffeeMissionActivity 시작하는 Intent
+                Intent intent = new Intent(DailyMissionActivity.this, DiaryMissionActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
+            }
+        });
 
         // 다른 버튼들에 대한 onClickListener 설정이 필요하면 여기에 추가합니다.
         // 예: missionBtn3.setOnClickListener(...);
@@ -205,6 +215,7 @@ public class DailyMissionActivity extends AppCompatActivity {
                     missions.put("communicate", false);
                     missions.put("workout", false);
                     missions.put("coffee", false);
+                    missions.put("diary",false);
 
                     userMissionsRef.setValue(missions); // 초기 미션 상태 설정
                 }

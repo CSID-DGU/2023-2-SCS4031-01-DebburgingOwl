@@ -119,7 +119,7 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         // ... 나머지 코드
-        setupLikeButton(btnLike, imageId);
+        setupLikeButton(btnLike, imageId,uploaderId);
         // CommentAdapter 초기화
         commentAdapter = new CommentAdapter(this, currentUserId, imageId);
         recyclerViewComments.setAdapter(commentAdapter);
@@ -225,11 +225,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    private void setupLikeButton(ImageButton button, String imageId) {
+    private void setupLikeButton(ImageButton button, String imageId, String uploaderId) {
         DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
         DatabaseReference imageRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        if (userId.equals(uploaderId)) {
+            button.setEnabled(false);
+            button.setAlpha(0.5f); // 버튼을 반투명으로 표시하여 비활성화 상태임을 시각적으로 나타냄
+            return;
+        }
         // 좋아요 상태를 초기화
         likesRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
