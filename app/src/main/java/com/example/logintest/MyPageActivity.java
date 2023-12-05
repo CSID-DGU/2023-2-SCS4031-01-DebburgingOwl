@@ -24,8 +24,9 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView gradeTextView, nickname, point, people, userType;
     private DatabaseReference userRef;
     private boolean doubleBackToExitPressedOnce = false;
-    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreBtn;
+    Button myPageEditButton, myPostButton, myBookmarkButton, pointStoreButton, myDiaryBtn;
 
+    private int totalLikeCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +37,20 @@ public class MyPageActivity extends AppCompatActivity {
         point = findViewById(R.id.myPage_point);
         people = findViewById(R.id.myPage_people);
         myPageEditButton = findViewById(R.id.myPageEditBtn);
+        myDiaryBtn = findViewById(R.id.myDiaryBtn);
+        myDiaryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyPageActivity.this, DiaryListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
+            totalLikeCount=0;
+            loadUserLikesCount(userId);
 
             // Firebase Realtime Database에서 사용자의 데이터 참조를 가져옴
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -78,6 +89,8 @@ public class MyPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MyPageActivity.this, MyPageEditActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+
             }
         });
 
@@ -95,6 +108,15 @@ public class MyPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyPageActivity.this, MyBookmarkActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        pointStoreButton = findViewById(R.id.pointStoreBtn);
+        pointStoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyPageActivity.this, PointActivity.class);
                 startActivity(intent);
             }
         });
@@ -129,7 +151,43 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
     }
+    private void loadUserLikesCount(String userId) {
+        DatabaseReference uploadsRef = FirebaseDatabase.getInstance().getReference("uploads");
+        DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes");
 
+        uploadsRef.orderByChild("uploader").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot uploadSnapshot : dataSnapshot.getChildren()) {
+                    String imageId = uploadSnapshot.getKey();
+
+                    likesRef.child(imageId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot likeSnapshot) {
+                            totalLikeCount += likeSnapshot.getChildrenCount();
+                            updateUserLikeCount(userId, totalLikeCount); // 사용자의 좋아요 수 업데이트
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // 오류 처리
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
+    private void updateUserLikeCount(String userId, int likeCount) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        usersRef.child("likeCount").setValue(likeCount); // 좋아요 수 업데이트
+    }
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {

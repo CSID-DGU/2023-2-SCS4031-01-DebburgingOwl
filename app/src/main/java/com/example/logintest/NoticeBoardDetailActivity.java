@@ -53,22 +53,31 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
             if (itemId == R.id.board) {
                 intent = new Intent(NoticeBoardDetailActivity.this, BoardActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
                 return true;
             } else if (itemId == R.id.community) {
                 intent = new Intent(NoticeBoardDetailActivity.this, CommunityActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 return true;
             } else if (itemId == R.id.home) {
                 intent = new Intent(NoticeBoardDetailActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 return true;
             } else if (itemId == R.id.daily_mission) {
                 intent = new Intent(NoticeBoardDetailActivity.this, DailyMissionActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 return true;
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(NoticeBoardDetailActivity.this, MyPageActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 return true;
             } else {
                 return false;
