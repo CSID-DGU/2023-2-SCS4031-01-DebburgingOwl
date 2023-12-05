@@ -89,6 +89,7 @@ public class DetailActivity extends AppCompatActivity {
                 .load(imageUrl)
                 .into(imageViewDetail);
         switchPublicPrivate = findViewById(R.id.switchPublicPrivate);
+        loadImageInfo(imageId, switchPublicPrivate);
 
 
 
@@ -311,6 +312,40 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void loadImageInfo(String imageId, Switch switchPublicPrivate) {
+        if (imageId == null) {
+            Toast.makeText(this, "Image ID is not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        DatabaseReference imageRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
+        imageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ImageModel image = dataSnapshot.getValue(ImageModel.class);
+                    if (image != null) {
+                        // 스위치 상태 설정
+                        switchPublicPrivate.setChecked(image.getPublicStatus());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 에러 처리
+            }
+        });
+    }
+
+    // 스위치 변경 리스너
+    private void setupSwitchListener(Switch switchPublicPrivate) {
+        switchPublicPrivate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            updateImagePublicStatus(isChecked);
+        });
+    }
     private void updateImagePublicStatus(boolean publicStatus) {
         if (imageId == null) {
             Toast.makeText(this, "Image ID is not available", Toast.LENGTH_SHORT).show();
@@ -324,6 +359,8 @@ public class DetailActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Toast.makeText(DetailActivity.this, "Visibility updated", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(DetailActivity.this, "Failed to update visibility", Toast.LENGTH_SHORT).show());
     }
+
+
     private void postComment(String commentText) {
         BadWordFiltering badWordFiltering = new BadWordFiltering();
         List<String> bannedWords = Arrays.asList("비속어1", "비속어2", "비속어3"); // 실제 비속어 목록으로 채워야 함
