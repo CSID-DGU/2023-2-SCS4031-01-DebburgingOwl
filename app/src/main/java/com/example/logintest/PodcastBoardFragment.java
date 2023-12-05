@@ -47,42 +47,61 @@ public class PodcastBoardFragment extends Fragment {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         loadPodcasts();
-        loadPodcasts();
 
         return view;
     }
 
     private void loadPodcasts() {
-        // "podcasts" 그룹 내의 데이터를 읽어오기
-        databaseReference.child("podcasts").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> podcastLinks = new ArrayList<>();
+        // "podcasts" 그룹 내의 특정 사용자(userID가 "iys04003@naver.com"인) 데이터를 읽어오기
+        databaseReference.child("podcasts")
+                .orderByChild("userID")
+                .equalTo("iys04003@naver.com")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Podcast> podcastList = new ArrayList<>();
 
-                // 데이터를 리스트에 추가
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String youtubeLink = snapshot.child("youtubeLink").getValue(String.class);
-                    podcastLinks.add(youtubeLink);
-                }
+                        // 데이터를 리스트에 추가
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String title = snapshot.child("title").getValue(String.class);
+                            String description = snapshot.child("description").getValue(String.class);
+                            String userID = snapshot.child("userID").getValue(String.class);
+                            String youtubeLink = snapshot.child("youtubeLink").getValue(String.class);
 
-                // 리스트뷰에 데이터 표시
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, podcastLinks);
-                podcastListView.setAdapter(adapter);
+                            // Podcast 객체를 생성하여 리스트에 추가
+                            Podcast podcast = new Podcast(title, description, userID, youtubeLink);
+                            podcastList.add(podcast);
+                        }
 
-                // WebView에 첫 번째 유튜브 링크 로드
-                if (!podcastLinks.isEmpty()) {
-                    String firstYoutubeLink = podcastLinks.get(0);
-                    loadYoutubeVideo(firstYoutubeLink);
-                }
-            }
+                        // 리스트뷰에 데이터 표시
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, getTitles(podcastList));
+                        podcastListView.setAdapter(adapter);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("PodcastBoardFragment", "Error reading data from Firebase", error.toException());
-                Toast.makeText(requireContext(), "Error reading data from Firebase", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        // WebView에 첫 번째 유튜브 링크 로드
+                        if (!podcastList.isEmpty()) {
+                            Podcast firstItem = podcastList.get(0);
+                            loadYoutubeVideo(firstItem.getYoutubeLink());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("PodcastBoardFragment", "Error reading data from Firebase", error.toException());
+                        Toast.makeText(requireContext(), "Error reading data from Firebase", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
+    // Podcast 리스트에서 title 목록을 추출하는 메서드
+    private List<String> getTitles(List<Podcast> podcasts) {
+        List<String> titles = new ArrayList<>();
+        for (Podcast podcast : podcasts) {
+            titles.add(podcast.getTitle());
+        }
+        return titles;
+    }
+
+
 
     private void loadYoutubeVideo(String youtubeLink) {
         // 유튜브 동영상을 로드하기 위한 코드

@@ -2,13 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -98,9 +100,27 @@
             android:name=".WorkoutActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".CommunicationMission"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryWriteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiaryMissionActivity"
+            android:exported="false" />
+
+
         <service
             android:name=".StepCounterService"
-            android:foregroundServiceType="dataSync">
+            android:foregroundServiceType="dataSync"
+            android:exported="false">
 
             <!-- Declare the foreground service type -->
         </service>

@@ -20,14 +20,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class DailyMissionActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce = false;
     TextView missonRewardContent;
     Button workoutMission;
     Button coffeeMission;
     Button earlyMorningMission;
-    Button missionBtn4;
-    Button missionBtn5;
+    Button communicationMission;
+    Button diaryMission;
     Button missionBtn6;
     Button missionBtn7;
 
@@ -35,10 +41,10 @@ public class DailyMissionActivity extends AppCompatActivity {
     private void updateMissionVisibility(int userLevel) {
         // 이 부분에서는 userLevel에 따라 미션 버튼의 가시성을 설정합니다.
         workoutMission.setVisibility(userLevel >= 1 ? View.VISIBLE : View.GONE);
-        coffeeMission.setVisibility(userLevel >= 2 ? View.VISIBLE : View.GONE);
-        earlyMorningMission.setVisibility(userLevel >= 3 ? View.VISIBLE : View.GONE);
-        missionBtn4.setVisibility(userLevel >= 4 ? View.VISIBLE : View.GONE);
-        missionBtn5.setVisibility(userLevel >= 5 ? View.VISIBLE : View.GONE);
+        coffeeMission.setVisibility(userLevel >= 3 ? View.VISIBLE : View.GONE);
+        earlyMorningMission.setVisibility(userLevel >= 1 ? View.VISIBLE : View.GONE);
+        communicationMission.setVisibility(userLevel >= 2 ? View.VISIBLE : View.GONE);
+        diaryMission.setVisibility(userLevel >= 5 ? View.VISIBLE : View.GONE);
         missionBtn6.setVisibility(userLevel >= 6 ? View.VISIBLE : View.GONE);
         missionBtn7.setVisibility(userLevel >= 7 ? View.VISIBLE : View.GONE);
     }
@@ -52,14 +58,14 @@ public class DailyMissionActivity extends AppCompatActivity {
         workoutMission = (Button) findViewById(R.id.missionBtn1);
         coffeeMission = (Button) findViewById(R.id.missionBtn2);
         earlyMorningMission = (Button) findViewById(R.id.missionBtn3);
-        missionBtn4 = (Button) findViewById(R.id.missionBtn4);
-        missionBtn5 = (Button) findViewById(R.id.missionBtn5);
+        communicationMission = (Button) findViewById(R.id.missionBtn4);
+        diaryMission = (Button) findViewById(R.id.missionBtn5);
         missionBtn6 = (Button) findViewById(R.id.missionBtn6);
         missionBtn7 = (Button) findViewById(R.id.missionBtn7);
 
         // 다른 버튼들에 대한 onClickListener 설정이 필요하면 여기에 추가합니다.
         // 예: missionBtn3.setOnClickListener(...);
-
+        initializeDailyMissionData();
         // 사용자 인증 정보를 가져옵니다.
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -112,6 +118,7 @@ public class DailyMissionActivity extends AppCompatActivity {
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(DailyMissionActivity.this, MyPageActivity.class);
                 startActivity(intent);
+
                 return true;
             } else {
                 return false;
@@ -125,6 +132,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // WorkoutActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, WorkoutActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 
@@ -134,6 +143,8 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, CoffeeMissionActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 
@@ -143,6 +154,28 @@ public class DailyMissionActivity extends AppCompatActivity {
                 // CoffeeMissionActivity 시작하는 Intent
                 Intent intent = new Intent(DailyMissionActivity.this, WakeUpActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
+            }
+        });
+        communicationMission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CoffeeMissionActivity 시작하는 Intent
+                Intent intent = new Intent(DailyMissionActivity.this, CommunicationMission.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
+            }
+        });
+        diaryMission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // CoffeeMissionActivity 시작하는 Intent
+                Intent intent = new Intent(DailyMissionActivity.this, DiaryMissionActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
             }
         });
 
@@ -167,4 +200,32 @@ public class DailyMissionActivity extends AppCompatActivity {
             }
         }, 2000); // 2초 동안 대기
     }
+    private void initializeDailyMissionData() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference userMissionsRef = FirebaseDatabase.getInstance().getReference("userMissions").child(userId).child(currentDate);
+
+        userMissionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // 날짜 노드가 없으면 새로운 노드를 생성합니다.
+                    Map<String, Object> missions = new HashMap<>();
+                    missions.put("earlymorning", false);
+                    missions.put("communicate", false);
+                    missions.put("workout", false);
+                    missions.put("coffee", false);
+                    missions.put("diary",false);
+
+                    userMissionsRef.setValue(missions); // 초기 미션 상태 설정
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
 }

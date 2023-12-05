@@ -1,6 +1,13 @@
 package com.example.logintest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 import android.view.View;
 import android.widget.Button;
@@ -10,8 +17,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.widget.ProgressBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,28 +35,114 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class WorkoutActivity extends AppCompatActivity implements SensorEventListener {
+    private String lastDateTracked;
+    private boolean isReceiverRegistered = false;
+    private Drawable originalButtonBackground;
+    private String originalButtonText;
 
     private SensorManager sensorManager;
+    private BroadcastReceiver stepUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("com.example.logintest.STEP_UPDATE".equals(intent.getAction())) {
+                steps = intent.getIntExtra("steps", 0);
+                updateStepCounter();
+            }
+        }
+    };
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter("com.example.logintest.STEP_UPDATE");
+        registerReceiver(stepUpdateReceiver, filter);
+        isReceiverRegistered = true;
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        listenForStepUpdates();
+    }
+    private void listenForStepUpdates() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference stepsRef = FirebaseDatabase.getInstance().getReference("steps")
+                .child(userId).child(currentDate);
+
+        stepsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    steps = dataSnapshot.getValue(Integer.class);
+                    updateStepCounter();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isReceiverRegistered) {
+            unregisterReceiver(stepUpdateReceiver);
+            isReceiverRegistered = false;
+        }
+    }
+
+
     private TextView stepCounterTextView;
     private Button missionCompleteButton;
+    private Button startTrackingButton, stopTrackingButton;
+
     private ProgressBar stepProgressBar;
     private int steps = 0;
+    private String currentDate;
+    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+        checkAndRequestPermissions();
 
+
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         stepCounterTextView = findViewById(R.id.stepCounter);
         missionCompleteButton = findViewById(R.id.missionCompleteButton);
+        originalButtonBackground = missionCompleteButton.getBackground();
+        originalButtonText = missionCompleteButton.getText().toString();
         stepProgressBar = findViewById(R.id.stepProgressBar);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        checkMissionStatusAndUpdateButton();
 
-        // 초기 버튼 상태를 비활성화합니다.
-        //missionCompleteButton.setEnabled(false);
+        startTrackingButton = findViewById(R.id.startTrackingButton);
+        stopTrackingButton = findViewById(R.id.stopTrackingButton);
+        missionCompleteButton = findViewById(R.id.missionCompleteButton);
 
+
+
+        startTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent serviceIntent = new Intent(WorkoutActivity.this, StepCounterService.class);
+                startService(serviceIntent);
+            }
+        });
+
+        stopTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent serviceIntent = new Intent(WorkoutActivity.this, StepCounterService.class);
+                stopService(serviceIntent);
+            }
+        });
         // 걸음 수를 수동으로 증가시키는 버튼
         Button btnIncreaseSteps = findViewById(R.id.btnIncreaseSteps);
         btnIncreaseSteps.setOnClickListener(new View.OnClickListener() {
@@ -61,18 +160,36 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
                 if (steps >= 1000) {
                     // 경험치를 업데이트하는 메소드 호출
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference workoutMissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                            .child(userId)
+                            .child(currentDate)
+                            .child("workout");
+                    workoutMissionRef.setValue(true); // 미션 완료 상태로 업데이트
+
+                    missionCompleteButton.setEnabled(false); // 버튼 비활성화
                     updateExp(userId, 100);
                     updatePoint(userId,100);
+                    // AlertDialog를 사용하여 팝업 메시지 표시
+                    new AlertDialog.Builder(WorkoutActivity.this)
+                            .setTitle("미션 완료!")
+                            .setMessage("미션을 성공적으로 완료하셨습니다.")
+                            .setPositiveButton("최고에요!", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    restartActivity(); // 액티비티 재시작
+                                }
+                            })
+                            .show();
 
                     // 메인 액티비티로 이동
-                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
                 } else {
                     Toast.makeText(WorkoutActivity.this, "아직 " + (1000 - steps) + " 걸음이 부족해요!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         // 바텀 네비게이션 뷰 설정
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -91,6 +208,8 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             } else if (itemId == R.id.home) {
                 intent = new Intent(WorkoutActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
             } else if (itemId == R.id.daily_mission) {
                 // 일간 미션 액티비티가 현재 액티비티라면, 새로운 인텐트를 시작할 필요가 없습니다.
                 return true;
@@ -112,29 +231,25 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
-        } else {
-            Toast.makeText(this, "Step counter sensor not available!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            steps = (int) event.values[0];
-            updateStepCounter();
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            // 각 걸음마다 카운트를 1 증가
+            steps++;
+            updateFirebaseSteps(steps);
         }
+    }
+    private void updateFirebaseSteps(int currentSteps) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference stepsRef = FirebaseDatabase.getInstance().getReference("steps")
+                .child(userId).child(currentDate);
+        stepsRef.setValue(currentSteps);
     }
 
     @Override
@@ -209,4 +324,62 @@ public class WorkoutActivity extends AppCompatActivity implements SensorEventLis
             }
         });
     }
+    private void checkMissionStatusAndUpdateButton() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference workoutmissionRef = FirebaseDatabase.getInstance().getReference("userMissions")
+                .child(userId)
+                .child(currentDate)
+                .child("workout");
+
+        workoutmissionRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean isMissionComplete = dataSnapshot.getValue(Boolean.class);
+                    if (isMissionComplete != null && isMissionComplete) {
+                        missionCompleteButton.setEnabled(false);
+                        missionCompleteButton.setBackground(ContextCompat.getDrawable(WorkoutActivity.this, R.drawable.mission_color_background_complete)); // 새로운 배경 적용
+                        missionCompleteButton.setText("내일 또 만나요!"); // 버튼 텍스트를 "CLEAR"로 변경
+                    } else {
+                        missionCompleteButton.setEnabled(true);
+                        restoreButtonToOriginalState();
+
+                    }
+                } else {
+                    missionCompleteButton.setEnabled(true);
+                    restoreButtonToOriginalState();// 노드가 없으면 활성화 (미션을 아직 수행하지 않았다고 가정)
+                }
+            }
+            private void restoreButtonToOriginalState() {
+                missionCompleteButton.setEnabled(true);
+                missionCompleteButton.setBackground(ContextCompat.getDrawable(WorkoutActivity.this, R.drawable.mission_color_background)); // 원래 배경으로 복원
+                missionCompleteButton.setText(originalButtonText); // 원래 텍스트로 복원
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
+    }
+    private void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACTIVITY_RECOGNITION},
+                    PERMISSION_REQUEST_ACTIVITY_RECOGNITION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 부여되었을 때 필요한 작업 수행 (예: 센서 초기화)
+            } else {
+                // 사용자가 권한을 거부했을 때의 처리 (예: 기능 제한 또는 안내 메시지 표시)
+            }
+        }
+    }
+
 }

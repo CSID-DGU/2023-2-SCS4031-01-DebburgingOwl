@@ -139,14 +139,18 @@ public class MyPageEditActivity extends AppCompatActivity {
             } else if (itemId == R.id.home) {
                 intent = new Intent(MyPageEditActivity.this, MainActivity.class);
                 startActivity(intent);
+
                 return true;
             } else if (itemId == R.id.daily_mission) {
                 intent = new Intent(MyPageEditActivity.this, DailyMissionActivity.class);
                 startActivity(intent);
+
                 return true;
             } else if (itemId == R.id.mypage) {
                 intent = new Intent(MyPageEditActivity.this, MyPageActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+
                 return true;
             } else {
                 return false;

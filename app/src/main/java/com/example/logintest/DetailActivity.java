@@ -1,6 +1,7 @@
 
 package com.example.logintest;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,17 +13,22 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 // Picasso 라이브러리 임포트
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.vane.badwordfiltering.BadWordFiltering;
@@ -46,8 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     private ImageButton btnLike;
     private ImageButton btnComment; // 댓글 버튼
     private EditText editTextComment; // 댓글 입력 필드
-    private Button buttonSubmitComment; // 게시 버튼
-
+    private Button buttonSubmitComment, buttonDeletePost; // 게시 버튼
 
 
     @Override
@@ -56,6 +61,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         btnLike = findViewById(R.id.btnLike1);
         btnComment = findViewById(R.id.btnComment);
+        buttonDeletePost = findViewById(R.id.buttonDeletePost); // XML 레이아웃에 정의된 삭제 버튼을 찾습니다.
+
         // RecyclerView 초기화
         recyclerViewComments = findViewById(R.id.recyclerViewComments);
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
@@ -77,8 +84,10 @@ public class DetailActivity extends AppCompatActivity {
         String imageUrl = getIntent().getStringExtra("imageUrl");
         imageId = getIntent().getStringExtra("imageId"); // 인텐트에서 이미지 ID 가져오기
 
-        // Picasso를 사용하여 이미지 로딩 및 표시
-        Picasso.get().load(imageUrl).into(imageViewDetail);
+        // Picasso를 사용하여 이미지 로딩 및 표시$
+        Glide.with(this)
+                .load(imageUrl)
+                .into(imageViewDetail);
         switchPublicPrivate = findViewById(R.id.switchPublicPrivate);
 
 
@@ -88,6 +97,7 @@ public class DetailActivity extends AppCompatActivity {
         if (uploaderId != null && uploaderId.equals(currentUserId)) {
             // 현재 사용자가 업로더일 경우 스위치 표시
             switchPublicPrivate.setVisibility(View.VISIBLE);
+            buttonDeletePost.setVisibility(View.VISIBLE);
             switchPublicPrivate.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 // 여기에 스위치 상태 변경 시 로직 추가
                 updateImagePublicStatus(isChecked);
@@ -97,10 +107,19 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             // 현재 사용자가 업로더가 아닐 경우 스위치 숨기기
             switchPublicPrivate.setVisibility(View.GONE);
+            buttonDeletePost.setVisibility(View.GONE);
+
         }
+        buttonDeletePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 게시물 삭제 확인 대화상자 표시
+                showDeleteConfirmationDialog(imageId);
+            }
+        });
 
         // ... 나머지 코드
-        setupLikeButton(btnLike, imageId);
+        setupLikeButton(btnLike, imageId,uploaderId);
         // CommentAdapter 초기화
         commentAdapter = new CommentAdapter(this, currentUserId, imageId);
         recyclerViewComments.setAdapter(commentAdapter);
@@ -141,6 +160,8 @@ public class DetailActivity extends AppCompatActivity {
                 intent = new Intent(DetailActivity.this, DailyMissionActivity.class);
                 startActivity(intent);
             } else if (itemId == R.id.mypage) {
+                intent = new Intent(DetailActivity.this, MyPageActivity.class);
+                startActivity(intent);
                 return true;
 
 
@@ -173,11 +194,46 @@ public class DetailActivity extends AppCompatActivity {
         });
 
     }
+    private void showDeleteConfirmationDialog(String imageId) {
+        new AlertDialog.Builder(this)
+                .setTitle("게시물 삭제")
+                .setMessage("이 게시물을 삭제하시겠습니까?")
+                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePost(imageId); // 사용자가 확인을 누를 경우 게시물 삭제
+                    }
+                })
+                .setNegativeButton("취소", null)
+                .show();
+    }
+    private void deletePost(String imageId) {
+        // Firebase Database에서 해당 게시물의 참조를 가져옵니다.
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
 
-    private void setupLikeButton(ImageButton button, String imageId) {
+        // 게시물을 삭제합니다.
+        postRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // 삭제가 성공적으로 완료되었을 때
+                    Toast.makeText(DetailActivity.this, "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish(); // 액티비티 종료 또는 다른 화면으로 이동
+                })
+                .addOnFailureListener(e -> {
+                    // 삭제에 실패했을 때
+                    Toast.makeText(DetailActivity.this, "게시물 삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void setupLikeButton(ImageButton button, String imageId, String uploaderId) {
         DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("likes").child(imageId);
+        DatabaseReference imageRef = FirebaseDatabase.getInstance().getReference("uploads").child(imageId);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+        if (userId.equals(uploaderId)) {
+            button.setEnabled(false);
+            button.setAlpha(0.5f); // 버튼을 반투명으로 표시하여 비활성화 상태임을 시각적으로 나타냄
+            return;
+        }
         // 좋아요 상태를 초기화
         likesRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -206,10 +262,18 @@ public class DetailActivity extends AppCompatActivity {
                         // 이미 좋아요를 눌렀다면 좋아요 취소 및 아이콘 변경
                         likesRef.child(userId).removeValue();
                         button.setImageResource(R.drawable.ic_like);
+                        recordUserActivity(userId, false,true); // 좋아요 취소
+                        updateImageLikesCount(imageRef, false); // 좋아요 수 감소
+
+
                     } else {
                         // 좋아요를 누르지 않았다면 좋아요 추가 및 아이콘 변경
                         likesRef.child(userId).setValue(true);
                         button.setImageResource(R.drawable.ic_liked);
+                        recordUserActivity(userId, true,true); // 좋아요 추가
+                        updateImageLikesCount(imageRef, true); // 좋아요 수 증가
+
+
                     }
                 }
 
@@ -220,7 +284,33 @@ public class DetailActivity extends AppCompatActivity {
             });
         });
     }
+    private void updateImageLikesCount(DatabaseReference imageRef, boolean increment) {
+        imageRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                ImageModel image = mutableData.getValue(ImageModel.class);
+                if (image == null) {
+                    return Transaction.success(mutableData);
+                }
 
+                int likesCount = image.getLikesCount();
+                if (increment) {
+                    likesCount++; // 좋아요 증가
+                } else {
+                    likesCount = Math.max(likesCount - 1, 0); // 좋아요 감소, 음수 방지
+                }
+                image.setLikesCount(likesCount);
+
+                mutableData.setValue(image);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // 트랜잭션이 완료된 후에 수행할 작업
+            }
+        });
+    }
     private void updateImagePublicStatus(boolean publicStatus) {
         if (imageId == null) {
             Toast.makeText(this, "Image ID is not available", Toast.LENGTH_SHORT).show();
@@ -275,6 +365,8 @@ public class DetailActivity extends AppCompatActivity {
                 commentsRef.child(commentId).setValue(comment).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(DetailActivity.this, "댓글이 게시되었습니다", Toast.LENGTH_SHORT).show();
+                        recordUserActivity(currentUserId, true,false); // 댓글 추가
+
                     } else {
                         Toast.makeText(DetailActivity.this, "댓글 게시에 실패했습니다", Toast.LENGTH_SHORT).show();
                     }
@@ -308,6 +400,40 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+    private void recordUserActivity(String userId, boolean isActivity, boolean isLike) {
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference("userActivity").child(userId).child(currentDate);
+
+        activityRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                UserActivity userActivity = mutableData.getValue(UserActivity.class);
+                if (userActivity == null) {
+                    userActivity = new UserActivity(0, 0); // 초기화
+                }
+
+                if (isActivity) {
+                    userActivity.incrementLikesOrComments(isLike);
+                } else {
+                    userActivity.decrementLikesOrComments(isLike);
+                }
+
+                mutableData.setValue(userActivity);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                // 데이터 업데이트 후 추가 처리 가능
+            }
+        });
+    }
+    public interface UserActivityRecorder {
+        void recordUserActivity(String userId, boolean isActivity, boolean isLike);
+    }
+
+
 
 
 
