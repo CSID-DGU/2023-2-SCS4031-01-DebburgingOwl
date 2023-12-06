@@ -33,10 +33,15 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
     Button mentorInfoBtn;
     BottomSheetFragment bottomSheet;
     private String currentUserId;
+    private Information selectedInformation;
+
 
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference bookmarksRef = database.getReference("Bookmark");
+
+    private DatabaseReference informaionsRef = database.getReference("informations");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,24 +64,28 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         infoUserNickname = findViewById(R.id.infoUserNickname);
         mentorInfoBtn = findViewById(R.id.mentorInfoBtn);
 
-        // Information 객체를 받아오는 코드
-        Intent intent = getIntent();
-        Information information = (Information) intent.getSerializableExtra("selectedItem");
 
         // Intent로부터 전달받은 Information 객체를 가져옴
         Information selectedInformation = (Information) getIntent().getSerializableExtra("selectedInformation");
+
+        if (selectedInformation == null) {
+            // Information 객체가 null인 경우 예외 처리
+            Toast.makeText(InformationBoardDetailActivity.this, "게시물을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish(); // 액티비티 종료 또는 다른 처리 수행
+            return;
+        }
 
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 북마크 버튼 클릭 처리
-                handleBookmarkButtonClick(information);
+                handleBookmarkButtonClick(selectedInformation);
             }
         });
 
         // 가져온 정보를 TextView에 설정
-        title.setText(information.getTitle());
-        content.setText(information.getContent());
+        title.setText(selectedInformation.getTitle());
+        content.setText(selectedInformation.getContent());
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,13 +158,15 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
                             boolean isBookmarked = !bookmark.getIsBookmarked();
                             bookmark.setIsBookmarked(isBookmarked);
                             bookmarkSnapshot.getRef().setValue(bookmark);
-                            updateBookmarkStatus(isBookmarked);
+                            updateBookmarkStatus(selectedInformation, isBookmarked);
                             return;
                         }
                     }
 
                     // 북마크가 없는 경우 새로운 북마크를 추가
                     addNewBookmark(selectedInformation);
+                    bookmarkBtn.setImageResource(R.drawable.ic_bookmarked);
+
                 }
 
                 @Override
@@ -182,11 +193,23 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         // Firebase Realtime Database에 새로운 북마크 추가
         String bookmarkKey = bookmarksRef.push().getKey();
         bookmarksRef.child(bookmarkKey).setValue(newBookmark);
-        updateBookmarkStatus(true);
-        Toast.makeText(this, "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+
     }
 
-    private void updateBookmarkStatus(boolean isBookmarked) {
+    private void updateBookmarkStatus(Information selectedInformation, boolean isBookmarked) {
+        int currentBookmarks = selectedInformation.getBookmarks();
+        if (isBookmarked) {
+            // 북마크 추가
+            bookmarkBtn.setImageResource(R.drawable.ic_bookmarked);
+            currentBookmarks++;
+        } else {
+            // 북마크 제거
+            bookmarkBtn.setImageResource(R.drawable.ic_bookmark);
+            currentBookmarks--;
+        }
+        selectedInformation.setBookmarks(currentBookmarks);
+
+
 
     }
 }
