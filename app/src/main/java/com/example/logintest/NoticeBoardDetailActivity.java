@@ -32,6 +32,8 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
     // Firebase 초기화
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference bookmarksRef = database.getReference("Bookmark");
+    private DatabaseReference noticesRef = database.getReference("notices");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +142,8 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
                             boolean isBookmarked = !bookmark.getIsBookmarked();
                             bookmark.setIsBookmarked(isBookmarked);
                             bookmarkSnapshot.getRef().setValue(bookmark);
-                            updateBookmarkStatus(isBookmarked);
+                            updateBookmarkStatus(selectedNotice, isBookmarked);
+
                             return;
                         }
                     }
@@ -161,9 +164,14 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
     // 북마크를 추가하는 메서드
     private void addNewBookmark(Notice selectedNotice) {
         if (currentUserId == null) {
-            // 사용자 ID가 없을 경우 처리 (예: 로그인이 되어있지 않은 상태)
             return;
         }
+
+        // Notice 객체의 북마크 수를 업데이트
+        int currentBookmarks = selectedNotice.getBookmarks();
+        currentBookmarks++;
+        selectedNotice.setBookmarks(currentBookmarks);
+
         Bookmark newBookmark = new Bookmark();
         newBookmark.setContentType("Notice");
         newBookmark.setUserID(currentUserId);
@@ -173,11 +181,24 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
         // Firebase Realtime Database에 새로운 북마크 추가
         String bookmarkKey = bookmarksRef.push().getKey();
         bookmarksRef.child(bookmarkKey).setValue(newBookmark);
-        updateBookmarkStatus(true);
+
+
         Toast.makeText(this, "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateBookmarkStatus(boolean isBookmarked) {
+
+    private void updateBookmarkStatus(Notice selectedNotice, boolean isBookmarked) {
+        int currentBookmarks = selectedNotice.getBookmarks();
+        if (isBookmarked) {
+            // 북마크 추가
+            currentBookmarks++;
+        } else {
+            // 북마크 제거
+            currentBookmarks--;
+        }
+        selectedNotice.setBookmarks(currentBookmarks);
+
+
 
     }
 }

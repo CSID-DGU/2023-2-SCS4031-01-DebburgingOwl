@@ -1,5 +1,6 @@
 package com.example.logintest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -85,7 +86,43 @@ public class MyBookmarkActivity extends AppCompatActivity {
 
     // 게시물의 상세 정보를 보여주는 액티비티로 이동하는 메서드
     private void navigateToDetailActivity(String selectedTitle) {
-        // TODO: 선택된 게시물의 상세 정보를 보여주는 액티비티로 이동하는 코드 추가
-        // 예를 들어, NoticeBoardDetailActivity로 이동하는 코드를 작성
+        DatabaseReference bookmarkRef = database.getReference("Bookmark");
+
+        // 선택된 제목의 contentType을 확인하여 적절한 상세 액티비티로 이동
+        bookmarkRef.orderByChild("contentKey").equalTo(selectedTitle).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot bookmarkSnapshot : dataSnapshot.getChildren()) {
+                    Bookmark bookmark = bookmarkSnapshot.getValue(Bookmark.class);
+
+                    if (bookmark != null) {
+                        String contentType = bookmark.getContentType();
+                        String contentKey = bookmark.getContentKey();
+
+                        // contentType에 따라 적절한 상세 액티비티로 이동
+                        if ("Information".equals(contentType)) {
+                            // Information일 경우 InformationBoardDetailActivity로 이동
+                            Intent intent = new Intent(MyBookmarkActivity.this, InformationBoardDetailActivity.class);
+                            intent.putExtra("contentKey", contentKey);
+                            startActivity(intent);
+                        } else if ("Notice".equals(contentType)) {
+                            // Notice일 경우 NoticeBoardDetailActivity로 이동
+                            Intent intent = new Intent(MyBookmarkActivity.this, NoticeBoardDetailActivity.class);
+                            intent.putExtra("contentKey", contentKey);
+                            startActivity(intent);
+                        } else {
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+                Toast.makeText(MyBookmarkActivity.this, "북마크 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+
 }
