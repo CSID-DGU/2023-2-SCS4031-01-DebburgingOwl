@@ -12,8 +12,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class NoticeBoardDetailActivity extends AppCompatActivity {
@@ -23,6 +26,9 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
     TextView title;
     TextView content;
 
+    private String currentUserId;
+
+
     // Firebase 초기화
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference bookmarksRef = database.getReference("Bookmark");
@@ -31,6 +37,13 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board_detail);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+        }
 
         backBtn = (ImageButton) findViewById(R.id.noticeBackBtn);
         bookmarkBtn =(ImageButton) findViewById(R.id.noticeBookmarkBtn);
@@ -115,19 +128,56 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
         if (currentUser != null) {
             String currentUserId = currentUser.getUid();
 
-            // 북마크 객체 생성
-            Bookmark bookmark = new Bookmark();
-            bookmark.setContentType("Notice");  // 또는 "Information" 등으로 변경
-            bookmark.setUserID(currentUserId);   // 현재 로그인된 사용자의 ID 설정
-            bookmark.setContentKey(selectedNotice.getTitle());
-            bookmark.setIsBookmarked(true);
+            // Firebase Realtime Database에서 현재 사용자의 북마크 정보를 확인
+            bookmarksRef.orderByChild("userID").equalTo(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot bookmarkSnapshot : dataSnapshot.getChildren()) {
+                        Bookmark bookmark = bookmarkSnapshot.getValue(Bookmark.class);
 
-            // Firebase Realtime Database에 북마크 정보 추가
-            String bookmarkKey = bookmarksRef.push().getKey();  // 새로운 키 생성
-            bookmarksRef.child(bookmarkKey).setValue(bookmark);
+                        if (bookmark != null && bookmark.getContentKey().equals(selectedNotice.getTitle())) {
+                            // 이미 북마크가 있는 경우 setIsBookmarked 값을 변경
+                            boolean isBookmarked = !bookmark.getIsBookmarked();
+                            bookmark.setIsBookmarked(isBookmarked);
+                            bookmarkSnapshot.getRef().setValue(bookmark);
+                            updateBookmarkStatus(isBookmarked);
+                            return;
+                        }
+                    }
 
-            // 북마크 추가 완료 메시지 또는 필요한 작업을 수행합니다.
-            Toast.makeText(this, "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                    // 북마크가 없는 경우 새로운 북마크를 추가
+                    addNewBookmark(selectedNotice);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // 오류 처리
+                    Toast.makeText(NoticeBoardDetailActivity.this, "북마크 정보를 확인하는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+    }
+
+    // 북마크를 추가하는 메서드
+    private void addNewBookmark(Notice selectedNotice) {
+        if (currentUserId == null) {
+            // 사용자 ID가 없을 경우 처리 (예: 로그인이 되어있지 않은 상태)
+            return;
+        }
+        Bookmark newBookmark = new Bookmark();
+        newBookmark.setContentType("Notice");
+        newBookmark.setUserID(currentUserId);
+        newBookmark.setContentKey(selectedNotice.getTitle());
+        newBookmark.setIsBookmarked(true);
+
+        // Firebase Realtime Database에 새로운 북마크 추가
+        String bookmarkKey = bookmarksRef.push().getKey();
+        bookmarksRef.child(bookmarkKey).setValue(newBookmark);
+        updateBookmarkStatus(true);
+        Toast.makeText(this, "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateBookmarkStatus(boolean isBookmarked) {
+
     }
 }
