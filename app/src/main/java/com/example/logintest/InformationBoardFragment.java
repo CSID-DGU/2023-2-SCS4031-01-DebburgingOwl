@@ -46,7 +46,7 @@ public class InformationBoardFragment extends Fragment {
         // Firebase Realtime Database의 informations 참조 가져오기
         informationsRef = FirebaseDatabase.getInstance().getReference("informations");
         loadInformationData();
-        // 게시글 데이터를 임의로 생성
+
         informationList = new ArrayList<>();
         adapter = new InformationAdapter(getContext(), informationList); // 기존의 adapter를 초기화
 
