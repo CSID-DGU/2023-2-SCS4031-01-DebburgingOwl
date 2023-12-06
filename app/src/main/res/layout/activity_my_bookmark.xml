@@ -17,7 +17,7 @@
         android:padding="15dp"/>
 
     <ListView
-        android:id="@+id/bookmarkGridView"
+        android:id="@+id/bookmarkListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/myBookmark"
