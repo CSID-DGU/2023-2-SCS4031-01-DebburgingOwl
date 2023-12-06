@@ -1,6 +1,8 @@
 package com.example.logintest;
 
-public class Podcast {
+import java.io.Serializable;
+
+public class Podcast implements Serializable {
     private String title;
     private String description;
     private String userID;
@@ -11,6 +13,10 @@ public class Podcast {
         this.youtubeLink = youtubeLink;
         this.description = description;
         this.userID = userID;
+    }
+
+    public Podcast() {
+
     }
 
     public String getTitle() {

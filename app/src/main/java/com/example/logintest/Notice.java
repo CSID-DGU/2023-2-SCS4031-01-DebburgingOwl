@@ -4,6 +4,7 @@ import java.io.Serializable;
 public class Notice implements Serializable {
     private String title;
     private String content;
+    private int bookmarks;
 
     // 기본 생성자 및 게터, 세터 메서드 추가
 
@@ -25,5 +26,13 @@ public class Notice implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getBookmarks() {
+        return bookmarks;
+    }
+
+    public void setBookmarks(int bookmarks) {
+        this.bookmarks = bookmarks;
     }
 }
