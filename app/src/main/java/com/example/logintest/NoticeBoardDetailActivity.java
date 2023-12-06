@@ -191,9 +191,11 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
         int currentBookmarks = selectedNotice.getBookmarks();
         if (isBookmarked) {
             // 북마크 추가
+            bookmarkBtn.setImageResource(R.drawable.ic_bookmarked);
             currentBookmarks++;
         } else {
             // 북마크 제거
+            bookmarkBtn.setImageResource(R.drawable.ic_bookmark);
             currentBookmarks--;
         }
         selectedNotice.setBookmarks(currentBookmarks);
