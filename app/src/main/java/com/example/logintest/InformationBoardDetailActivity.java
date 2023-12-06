@@ -75,6 +75,9 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
             return;
         }
 
+        checkAndUpdateBookmarkStatus(selectedInformation);
+
+
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,6 +197,41 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         String bookmarkKey = bookmarksRef.push().getKey();
         bookmarksRef.child(bookmarkKey).setValue(newBookmark);
 
+    }
+
+    private void checkAndUpdateBookmarkStatus(Information selectedInformation) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser != null) {
+            String currentUserId = currentUser.getUid();
+
+            // Firebase Realtime Database에서 현재 사용자의 북마크 정보를 확인
+            bookmarksRef.orderByChild("userID").equalTo(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot bookmarkSnapshot : dataSnapshot.getChildren()) {
+                        Bookmark bookmark = bookmarkSnapshot.getValue(Bookmark.class);
+
+                        if (bookmark != null && bookmark.getContentKey().equals(selectedInformation.getTitle())) {
+                            // 이미 북마크가 있는 경우 setIsBookmarked 값을 확인하여 UI 업데이트
+                            boolean isBookmarked = bookmark.getIsBookmarked();
+                            updateBookmarkStatus(selectedInformation, isBookmarked);
+                            return;
+                        }
+                    }
+
+                    // 북마크가 없는 경우
+                    updateBookmarkStatus(selectedInformation, false);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // 오류 처리
+                    Toast.makeText(InformationBoardDetailActivity.this, "북마크 정보를 확인하는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void updateBookmarkStatus(Information selectedInformation, boolean isBookmarked) {
