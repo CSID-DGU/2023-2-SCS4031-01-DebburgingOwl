@@ -150,6 +150,8 @@ public class NoticeBoardDetailActivity extends AppCompatActivity {
 
                     // 북마크가 없는 경우 새로운 북마크를 추가
                     addNewBookmark(selectedNotice);
+                    bookmarkBtn.setImageResource(R.drawable.ic_bookmarked);
+
                 }
 
                 @Override
