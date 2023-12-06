@@ -25,7 +25,7 @@ public class MyBookmarkActivity extends AppCompatActivity {
     private ListView bookmarkListView;
     private List<String> bookmarkTitles;
     private ArrayAdapter<String> adapter;
-
+    private String title;
     // Firebase 초기화
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference bookmarksRef = database.getReference("Bookmark");
@@ -100,17 +100,16 @@ public class MyBookmarkActivity extends AppCompatActivity {
                         String contentKey = bookmark.getContentKey();
 
                         // contentType에 따라 적절한 상세 액티비티로 이동
-                        if ("Information".equals(contentType)) {
-                            // Information일 경우 InformationBoardDetailActivity로 이동
-                            Intent intent = new Intent(MyBookmarkActivity.this, InformationBoardDetailActivity.class);
-                            intent.putExtra("contentKey", contentKey);
-                            startActivity(intent);
-                        } else if ("Notice".equals(contentType)) {
-                            // Notice일 경우 NoticeBoardDetailActivity로 이동
-                            Intent intent = new Intent(MyBookmarkActivity.this, NoticeBoardDetailActivity.class);
-                            intent.putExtra("contentKey", contentKey);
-                            startActivity(intent);
-                        } else {
+                        switch (contentType) {
+                            case "Information":
+                                // Information일 경우 InformationBoardDetailActivity로 이동
+                                navigateToInformationDetail(contentKey);
+                                break;
+                            case "Notice":
+                                // Notice일 경우 NoticeBoardDetailActivity로 이동
+                                navigateToNoticeDetail(contentKey);
+                                break;
+                            // 다른 contentType에 대한 처리 추가 가능
                         }
                     }
                 }
@@ -122,6 +121,69 @@ public class MyBookmarkActivity extends AppCompatActivity {
                 Toast.makeText(MyBookmarkActivity.this, "북마크 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // Information 상세 페이지로 이동하는 메서드
+    // Notice 상세 페이지로 이동하는 메서드
+    private void navigateToNoticeDetail(String contentKey) {
+        if (contentKey != null) {
+            DatabaseReference noticeRef = database.getReference("notices");
+
+            noticeRef.orderByChild("title").equalTo(contentKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot noticeSnapshot : dataSnapshot.getChildren()) {
+                        Notice notice = noticeSnapshot.getValue(Notice.class);
+
+                        if (notice != null) {
+                            Intent intent = new Intent(MyBookmarkActivity.this, NoticeBoardDetailActivity.class);
+                            intent.putExtra("selectedNotice", notice);
+                            startActivity(intent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // 오류 처리
+                    Toast.makeText(MyBookmarkActivity.this, "게시물 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // contentKey가 null인 경우에 대한 처리 추가
+            Toast.makeText(MyBookmarkActivity.this, "게시물 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Information 상세 페이지로 이동하는 메서드
+    private void navigateToInformationDetail(String contentKey) {
+        if (contentKey != null) {
+            DatabaseReference informationRef = database.getReference("informations");
+
+            informationRef.orderByChild("title").equalTo(contentKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot informationSnapshot : dataSnapshot.getChildren()) {
+                        Information information = informationSnapshot.getValue(Information.class);
+
+                        if (information != null) {
+                            Intent intent = new Intent(MyBookmarkActivity.this, InformationBoardDetailActivity.class);
+                            intent.putExtra("selectedInformation", information);
+                            startActivity(intent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // 오류 처리
+                    Toast.makeText(MyBookmarkActivity.this, "게시물 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // contentKey가 null인 경우에 대한 처리 추가
+            Toast.makeText(MyBookmarkActivity.this, "게시물 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
