@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,6 +65,7 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
         infoUserType = findViewById(R.id.infoUserType);
         infoUserNickname = findViewById(R.id.infoUserNickname);
         mentorInfoBtn = findViewById(R.id.mentorInfoBtn);
+        infoUserNickname = findViewById(R.id.infoUserNickname);
 
 
         // Intent로부터 전달받은 Information 객체를 가져옴
@@ -98,12 +101,17 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
         mentorInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             // mentorInfoBtn 클릭 이벤트 설정
             public void onClick(View view) {
                 // BottomSheetFragment 인스턴스 생성
                 bottomSheet = new BottomSheetFragment();
+                loadMentorInformation(selectedInformation.getUserId());
+
+
                 // BottomSheetFragment를 화면에 표시
                 bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
             }
@@ -141,6 +149,51 @@ public class InformationBoardDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private String encodeFirebasePath(String path) {
+        return Base64.encodeToString(path.getBytes(), Base64.NO_WRAP);
+    }
+
+    private String decodeFirebasePath(String encodedPath) {
+        byte[] data = Base64.decode(encodedPath, Base64.NO_WRAP);
+        return new String(data);
+    }
+
+
+    private void loadMentorInformation(String mentorEmail) {
+        String sanitizedMentorEmail = encodeFirebasePath(mentorEmail);
+        DatabaseReference usersRef = database.getReference("users");
+
+        // users 테이블에서 mentorId와 일치하는 사용자 정보 가져오기
+        usersRef.orderByChild("email").equalTo(decodeFirebasePath(sanitizedMentorEmail)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        User mentorUser = userSnapshot.getValue(User.class);
+
+                        // mentorUser가 null이 아니면 멘토 정보를 전달
+                        if (mentorUser != null) {
+                            bottomSheet.setMentorInformation(mentorUser.getNickname(), mentorUser.getEmail());
+
+                        } else {
+                            Log.d("MentorInfoDebug", "mentorUser is null");
+                        }
+                    }
+                } else {
+                    Log.d("MentorInfoDebug", "DataSnapshot does not exist for mentorId: " + sanitizedMentorEmail);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 오류 처리
+                Toast.makeText(InformationBoardDetailActivity.this, "멘토 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void handleBookmarkButtonClick(Information selectedInformation) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
