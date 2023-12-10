@@ -6,16 +6,19 @@ public class DiaryEntry {
     private String content;
     private String timestamp;
 
+    private String imageUrl;
+
     // Firebase를 위한 기본 생성자
     public DiaryEntry() {
     }
 
     // Parameterized Constructor
-    public DiaryEntry(String id, String title, String content, String timestamp) {
+    public DiaryEntry(String id, String title, String content, String timestamp, String imageUrl) {
         this.id = id;
-        this.title = title; // 제목 설정
+        this.title = title;
         this.content = content;
         this.timestamp = timestamp;
+        this.imageUrl = imageUrl; // 이미지 URL 설정
     }
 
     // Getters and Setters
@@ -45,6 +48,14 @@ public class DiaryEntry {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setTimestamp(String timestamp) {
