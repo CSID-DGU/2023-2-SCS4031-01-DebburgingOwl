@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:layout_above="@id/bottomNavigationView">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,196 +104,171 @@
             android:layout_marginBottom="25dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text=" 수정하기"
+            android:text="수정하기"
             android:textColor="#ffffff"
-            android:background="@drawable/button_shape"/>
+            android:background="@drawable/button_shape"
+            android:layout_below="@id/mypageUserImage"/>
+    <!-- 스크롤뷰 시작 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_below="@id/myPageEditBtn">
 
+        <!-- 스크롤 가능한 콘텐츠를 담을 레이아웃 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  포인트"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:layout_weight="2"/>
-
-            <TextView
-                android:id="@+id/myPage_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="     point"
+            <!-- 포인트 정보 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="포인트"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/myPage_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="point"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  나를 공감해준 사람들"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/myPage_people"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="명"
+            <!-- 나를 공감해준 사람들 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="나를 공감해준 사람들"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/myPage_people"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="명"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <!-- 나의 일기장 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="나의 일기장"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/myDiaryBtn"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:text="보기"
+                    android:background="@drawable/button_shape"
+                    android:textColor="#ffffff"
+                    />
+            </LinearLayout>
+
+            <!-- 나의 게시물 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="나의 게시물"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/myPostBtn"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:text="보기"
+                    android:background="@drawable/button_shape"
+                    android:textColor="#ffffff"
+                    />
+            </LinearLayout>
+
+            <!-- 북마크한 게시물 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="북마크한 게시물"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/myBookmarkBtn"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:text="보기"
+                    android:background="@drawable/button_shape"
+                    android:textColor="#ffffff"
+                    />
+            </LinearLayout>
+
+            <!-- 포인트 상점 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="포인트 상점"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:layout_weight="1"/>
+                <Button
+                    android:id="@+id/pointStoreBtn"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:text="확인"
+                    android:background="@drawable/button_shape"
+                    android:textColor="#ffffff"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
-        <!-- 나의 일기장 항목 추가 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:text="  나의 일기장" />
-
-            <Button
-                android:id="@+id/myDiaryBtn"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="보기"
-                android:textColor="#ffffff"
-                android:background="@drawable/button_shape"/>
-        </LinearLayout>
-
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  나의 게시물"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:layout_weight="4"/>
-
-            <Button
-                android:id="@+id/myPostBtn"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="보기"
-                android:textColor="#ffffff"
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button_shape"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:text="  북마크한 게시물" />
-
-
-            <Button
-                android:id="@+id/myBookmarkBtn"
-                android:layout_width="85dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="보기"
-                android:textColor="#ffffff"
-                android:background="@drawable/button_shape"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:text="  포인트 상점" />
-
-            <Button
-                android:id="@+id/pointStoreBtn"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="확인"
-                android:textColor="#ffffff"
-                android:background="@drawable/button_shape"/>
-
-        </LinearLayout>
-
+    </ScrollView>
     </LinearLayout>
 
+    <!-- 하단 네비게이션 바 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -304,6 +280,5 @@
         app:itemTextColor="@color/bottom_nav_item_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navigation_menu" />
-
 
 </RelativeLayout>

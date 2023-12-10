@@ -21,8 +21,9 @@
         android:text="취소"
         android:layout_below="@+id/diaryTitle"
         android:layout_marginTop="16dp"
+        android:textColor="#ffffff"
         android:layout_marginLeft="8dp"
-        android:background="@null"/>
+        android:background="@drawable/button_shape"/>
 
     <Button
         android:id="@+id/writebtn"
@@ -35,6 +36,15 @@
         android:textColor="#ffffff"
         android:layout_marginRight="8dp"
         android:background="@drawable/button_shape"/>
+    <Button
+        android:id="@+id/buttonDeleteImage"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_toLeftOf="@+id/selectImageBtn"
+        android:layout_alignTop="@+id/selectImageBtn"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_delete"/>
     <Button
         android:id="@+id/selectImageBtn"
         android:layout_width="45dp"
