@@ -110,6 +110,7 @@ public class DiaryListActivity extends AppCompatActivity {
                 intent.putExtra("DIARY_ID", diaryEntry.getId());
                 intent.putExtra("DIARY_TITLE", diaryEntry.getTitle());
                 intent.putExtra("DIARY_CONTENT", diaryEntry.getContent());
+                intent.putExtra("DIARY_IMAGE_URL", diaryEntry.getImageUrl()); // 이미지 URL 추가
                 startActivity(intent);
             }
         });

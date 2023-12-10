@@ -46,7 +46,7 @@ public class InformationBoardFragment extends Fragment {
         // Firebase Realtime Database의 informations 참조 가져오기
         informationsRef = FirebaseDatabase.getInstance().getReference("informations");
         loadInformationData();
-        // 게시글 데이터를 임의로 생성
+
         informationList = new ArrayList<>();
         adapter = new InformationAdapter(getContext(), informationList); // 기존의 adapter를 초기화
 
@@ -77,12 +77,12 @@ public class InformationBoardFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 리스트 아이템이 클릭되면 해당 포지션의 데이터 가져오기
-                Information selectedItem = (Information) parent.getItemAtPosition(position);
+                Information selectedInformation = (Information) parent.getItemAtPosition(position);
 
                 // 클릭된 아이템에 대한 추가 작업 수행
                 // 예를 들면, 선택된 아이템을 다음 액티비티로 전달하여 보여주기
                 Intent intent = new Intent(getActivity(), InformationBoardDetailActivity.class);
-                intent.putExtra("selectedItem", selectedItem);
+                intent.putExtra("selectedInformation", selectedInformation);
                 startActivity(intent);
             }
         });

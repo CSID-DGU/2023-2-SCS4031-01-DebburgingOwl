@@ -8,6 +8,9 @@ public class Information implements Serializable{
     private String content;
     private String userId;
 
+    private int bookmarks;
+
+
     public Information() {
         // Default constructor required for calls to DataSnapshot.getValue(Information.class)
     }
@@ -49,6 +52,14 @@ public class Information implements Serializable{
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public int getBookmarks() {
+        return bookmarks;
+    }
+
+    public void setBookmarks(int bookmarks) {
+        this.bookmarks = bookmarks;
     }
 
 }

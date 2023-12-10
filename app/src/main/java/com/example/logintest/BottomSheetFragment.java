@@ -40,4 +40,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
+    public void setMentorInformation(String nickname, String email) {
+        TextView bottomSheetUserNickname = getView().findViewById(R.id.bottomSheetUserNickname);
+        TextView bottomSheetUserEmail = getView().findViewById(R.id.bottomSheetUserEmail);
+
+        // 멘토 정보 설정
+        bottomSheetUserNickname.setText(nickname);
+        bottomSheetUserEmail.setText(email);
+    }
+
 }

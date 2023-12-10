@@ -1,5 +1,6 @@
 package com.example.logintest;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,9 @@ public class PodcastBoardFragment extends Fragment {
     WebView podcastWebView;
     ListView podcastListView;
     DatabaseReference databaseReference;
+    List<Podcast> podcastList = new ArrayList<>();
+
+
 
 
     @Override
@@ -81,6 +85,15 @@ public class PodcastBoardFragment extends Fragment {
                         if (!podcastList.isEmpty()) {
                             Podcast firstItem = podcastList.get(0);
                             loadYoutubeVideo(firstItem.getYoutubeLink());
+
+                            // ListView 아이템 클릭 이벤트 설정
+                            podcastListView.setOnItemClickListener((parent, view, position, id) -> {
+                                // 클릭된 아이템의 데이터 가져오기
+                                Podcast selectedPodcast = podcastList.get(position);
+
+                                // 디테일 페이지로 이동하는 메서드 호출
+                                navigateToDetailPage(selectedPodcast);
+                            });
                         }
                     }
 
@@ -92,11 +105,14 @@ public class PodcastBoardFragment extends Fragment {
                 });
     }
 
+
     // Podcast 리스트에서 title 목록을 추출하는 메서드
     private List<String> getTitles(List<Podcast> podcasts) {
         List<String> titles = new ArrayList<>();
         for (Podcast podcast : podcasts) {
-            titles.add(podcast.getTitle());
+            if (podcast != null && podcast.getTitle() != null) {
+                titles.add(podcast.getTitle());
+            }
         }
         return titles;
     }
@@ -104,10 +120,13 @@ public class PodcastBoardFragment extends Fragment {
 
 
     private void loadYoutubeVideo(String youtubeLink) {
-        // 유튜브 동영상을 로드하기 위한 코드
-        String youtubeVideoUrl = "https://www.youtube.com/embed/" + extractVideoId(youtubeLink);
-        String html = "<html><body><iframe width=\"100%\" height=\"100%\" src=\"" + youtubeVideoUrl + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
-        podcastWebView.loadData(html, "text/html", null);
+        if (youtubeLink != null) {
+            String youtubeVideoUrl = "https://www.youtube.com/embed/" + extractVideoId(youtubeLink);
+            String html = "<html><body><iframe width=\"100%\" height=\"100%\" src=\"" + youtubeVideoUrl + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+            podcastWebView.loadData(html, "text/html", null);
+        } else {
+            // youtubeLink가 null인 경우에 대한 처리
+        }
     }
 
     private String extractVideoId(String youtubeLink) {
@@ -122,5 +141,12 @@ public class PodcastBoardFragment extends Fragment {
             }
         }
         return videoId;
+    }
+
+    // 디테일 페이지로 이동하는 메서드
+    private void navigateToDetailPage(Podcast podcast) {
+        Intent intent = new Intent(requireContext(), PodcastDetailActivity.class);
+        intent.putExtra("podcast", podcast); // Podcast 객체를 디테일 페이지로 전달
+        startActivity(intent);
     }
 }
