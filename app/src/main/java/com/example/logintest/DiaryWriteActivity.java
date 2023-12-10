@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class DiaryWriteActivity extends AppCompatActivity {
-
+    private Button buttonDeleteImage;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static final int PICK_IMAGE_REQUEST = 1;
     private EditText editTextTitle, editTextContent;
@@ -51,6 +51,8 @@ public class DiaryWriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_write);
+        buttonDeleteImage = findViewById(R.id.buttonDeleteImage);
+        buttonDeleteImage.setVisibility(View.GONE); // 초기에는 버튼 숨김
 
         editTextTitle = findViewById(R.id.title);
         editTextContent = findViewById(R.id.content);
@@ -74,10 +76,9 @@ public class DiaryWriteActivity extends AppCompatActivity {
             String imageUrl = getIntent().getStringExtra("DIARY_IMAGE_URL");
             originalImageUrl=getIntent().getStringExtra("DIARY_IMAGE_URL");
             if (imageUrl != null && !imageUrl.isEmpty()) {
-                Glide.with(this)
-                        .load(imageUrl)
-                        .into(imagePreview);
+                Glide.with(this).load(imageUrl).into(imagePreview);
                 imagePreview.setVisibility(View.VISIBLE);
+                buttonDeleteImage.setVisibility(View.VISIBLE); // 버튼 보이게 설정
             }
             editTextTitle.setText(title);
             editTextContent.setText(content);
@@ -94,6 +95,19 @@ public class DiaryWriteActivity extends AppCompatActivity {
                 saveOrUpdateDiaryEntry();
             }
         });
+        buttonDeleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (originalImageUrl != null) {
+                    deleteImageFromStorage(originalImageUrl);
+                }
+                imagePreview.setVisibility(View.GONE); // 이미지뷰 숨김
+                buttonDeleteImage.setVisibility(View.GONE); // 버튼 숨김
+                imageUri = null; // 이미지 URI 초기화
+                originalImageUrl = null; // 원래 이미지 URL 초기화
+            }
+        });
+
 
         // "취소" 버튼 이벤트
         buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -190,9 +204,14 @@ public class DiaryWriteActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(DiaryWriteActivity.this, "저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     private void deleteImageFromStorage(String imageUrl) {
-        StorageReference oldImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
-        oldImageRef.delete().addOnSuccessListener(aVoid -> Log.d("DiaryWriteActivity", "Old image deleted successfully"))
-                .addOnFailureListener(e -> Log.e("DiaryWriteActivity", "Error deleting old image", e));
+        try {
+            StorageReference oldImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+            oldImageRef.delete()
+                    .addOnSuccessListener(aVoid -> Log.d("DiaryWriteActivity", "Old image deleted successfully"))
+                    .addOnFailureListener(e -> Log.e("DiaryWriteActivity", "Error deleting old image", e));
+        } catch (IllegalArgumentException e) {
+            Log.e("DiaryWriteActivity", "Invalid URL for deleting image", e);
+        }
     }
 
     private void checkAndRequestPermissions() {
@@ -246,9 +265,11 @@ public class DiaryWriteActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData(); // 이미지 URI 저장
+            imageUri = data.getData(); // 새로운 이미지 URI
             imagePreview.setImageURI(imageUri); // ImageView에 이미지 설정
-            imagePreview.setVisibility(View.VISIBLE); // ImageView를 보이게 설정
+            imagePreview.setVisibility(View.VISIBLE); // ImageView 보이게 설정
+            buttonDeleteImage.setVisibility(View.VISIBLE); // 이미지 삭제 버튼 보이게 설정
+            originalImageUrl = null; // 기존 이미지 URL 초기화
         }
     }
 
