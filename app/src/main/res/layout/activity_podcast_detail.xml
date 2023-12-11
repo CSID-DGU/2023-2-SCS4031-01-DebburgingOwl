@@ -39,11 +39,13 @@
 
     <Button
         android:id="@+id/podcastBackBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="100dp"
-        android:text="팟캐스트 게시판" />
+        android:text="팟캐스트 게시판"
+        android:textColor="#ffffff"
+        android:background="@drawable/button_shape"/>
 
 </RelativeLayout>
