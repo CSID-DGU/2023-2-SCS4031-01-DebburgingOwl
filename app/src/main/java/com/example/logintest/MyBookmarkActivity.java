@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +49,36 @@ public class MyBookmarkActivity extends AppCompatActivity {
             String selectedTitle = bookmarkTitles.get(position);
             // 선택된 아이템의 상세 정보를 보여주는 액티비티로 이동하는 메서드 호출
             navigateToDetailActivity(selectedTitle);
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.mypage);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Intent intent;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.board) {
+                intent = new Intent(MyBookmarkActivity.this, BoardActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.community) {
+                intent = new Intent(MyBookmarkActivity.this, CommunityActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.home) {
+                intent = new Intent(MyBookmarkActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.daily_mission) {
+                intent = new Intent(MyBookmarkActivity.this, DailyMissionActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.mypage) {
+                return true;
+            } else {
+                return false;
+            }
         });
     }
 

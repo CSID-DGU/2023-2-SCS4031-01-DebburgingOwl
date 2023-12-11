@@ -142,7 +142,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.mypage);
+        bottomNavigationView.setSelectedItemId(R.id.community);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Intent intent;
