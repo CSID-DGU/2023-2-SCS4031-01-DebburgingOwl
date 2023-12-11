@@ -12,7 +12,7 @@
 ## 🔑 가이드
 ### installation
 ```
-git clone https://github.com/CSID-DGU/2023-1-OSSProj-NoQuestionMark-2.git
+git clone https://github.com/CSID-DGU/2023-2-SCS4031-01-DebburgingOwl.git
 ```
 ### Android Studio
 ```
