@@ -2,6 +2,7 @@ package com.example.logintest;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -150,12 +151,11 @@ public class CommunityActivity extends AppCompatActivity {
             if (requestCode == CAMERA_REQUEST) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-                // 카메라에서 가져온 이미지를 처리합니다 (예: 파일로 저장)
                 imageUri = getImageUri(imageBitmap); // Uri를 얻는 사용자 정의 메소드
-                uploadImage();
+                confirmImageUpload();
             } else if (requestCode == PICK_IMAGE_REQUEST) {
                 imageUri = data.getData();
-                uploadImage();
+                confirmImageUpload();
             }
         }
     }
@@ -350,5 +350,20 @@ public class CommunityActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void confirmImageUpload() {
+        new AlertDialog.Builder(this)
+                .setTitle("이미지 업로드")
+                .setMessage("이 이미지를 업로드하시겠습니까?")
+                .setPositiveButton("업로드", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 사용자가 확인을 눌렀을 때의 처리
+                        uploadImage();
+                    }
+                })
+                .setNegativeButton("취소", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
