@@ -70,7 +70,7 @@
         android:background="@null"
         android:hint="제목을 입력하세요" />
 
-    <EditText
+    <com.example.logintest.NoCopyPasteEditText
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
