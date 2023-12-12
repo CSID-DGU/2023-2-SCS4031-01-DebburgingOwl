@@ -47,7 +47,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:text="Diary Title"/>
-            <ImageView
+            <com.example.logintest.SquareImageView
                 android:id="@+id/imagePreview"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"

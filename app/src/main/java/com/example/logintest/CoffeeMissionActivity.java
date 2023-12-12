@@ -183,7 +183,10 @@ public class CoffeeMissionActivity extends AppCompatActivity {
         }
     }
 
-    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노","아이스아메리카노", "라떼", "카푸치노", "모카", "에스프레소","한우샤브")); // 커피 메뉴 리스트 준비
+    private Set<String> coffeeMenu = new HashSet<>(Arrays.asList("아메리카노", "아이스아메리카노", "라떼", "카푸치노", "모카", "에스프레소", "카페라떼",
+            "카라멜마끼아또", "바닐라라떼", "카페모카", "아이스티", "레몬에이드", "자몽에이드", "딸기스무디", "망고스무디", "카페모카", "초코라떼",
+            "그린티라떼", "민트초코라떼", "아이스그린티라떼", "아이스민트초코라떼", "바닐라아메리카노", "헤이즐넛라떼", "아이스헤이즐넛라떼",
+            "카페브레베", "카페모카프라페", "초코칩프라페", "아이스초코칩프라페", "바나나스무디", "파인애플주스", "오렌지주스", "자몽주스")); // 커피 메뉴 리스트 준비
 
     private void recognizeTextFromImage(InputImage image) {
         TextRecognizer recognizer =
@@ -212,7 +215,7 @@ public class CoffeeMissionActivity extends AppCompatActivity {
                         // 결과를 TextView에 표시
                         TextView resultTextView = findViewById(R.id.resultTextView);
 
-                        if (date != null){ //&& date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
+                        if (date != null && date.equals(currentDate)){//todo 이부분 각주풀면 영수증에 날짜까지 인식합니다.
 
                             // 한글 메뉴 이름 추출 및 비교
                             Pattern menuPattern = Pattern.compile("[가-힣]+");

@@ -402,6 +402,7 @@ public class DetailActivity extends AppCompatActivity {
                 commentsRef.child(commentId).setValue(comment).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(DetailActivity.this, "댓글이 게시되었습니다", Toast.LENGTH_SHORT).show();
+                        editTextComment.setText("");
                         recordUserActivity(currentUserId, true,false); // 댓글 추가
 
                     } else {

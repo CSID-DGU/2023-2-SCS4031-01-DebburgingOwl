@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="15dp"
-            android:text="분량이 너무 적으면 안되요!"
+            android:text="분량이 너무 적으면 안돼요!"
             android:textSize="18dp"/>
 
         <Button
