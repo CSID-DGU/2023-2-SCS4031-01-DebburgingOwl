@@ -1,5 +1,6 @@
 package com.example.logintest;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -70,33 +72,20 @@ public class DiaryDetailActivity extends AppCompatActivity {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 사용자의 UID
-                if (entryId != null) {
-                    // Firebase Storage에서 이미지 삭제
-                    if (imageUrl != null && !imageUrl.isEmpty()) {
-                        StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
-                        imageRef.delete().addOnSuccessListener(aVoid -> {
-                            // 이미지 삭제 성공 로그
-                            Log.d("DiaryDetailActivity", "Image successfully deleted from Storage.");
-                        }).addOnFailureListener(e -> {
-                            // 이미지 삭제 실패 로그
-                            Log.e("DiaryDetailActivity", "Failed to delete image from Storage.", e);
-                        });
-                    }
-
-                    // Firebase Realtime Database에서 일기 삭제
-                    FirebaseDatabase.getInstance().getReference().child("diaryEntries").child(userId).child(entryId).removeValue()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(DiaryDetailActivity.this, "일기가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                                finish(); // 화면 종료
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(DiaryDetailActivity.this, "삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                } else {
-                    Toast.makeText(DiaryDetailActivity.this, "삭제할 일기가 없습니다.", Toast.LENGTH_SHORT).show();
-                }
+                new AlertDialog.Builder(DiaryDetailActivity.this)
+                        .setTitle("일기 삭제")
+                        .setMessage("이 일기를 삭제하시겠습니까?")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 사용자가 확인을 눌렀을 때의 처리
+                                deleteDiaryEntry();
+                            }
+                        })
+                        .setNegativeButton("취소", null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.mypage);
 
@@ -127,6 +116,34 @@ public class DiaryDetailActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+
+    private void deleteDiaryEntry() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 사용자의 UID
+        if (entryId != null) {
+            // Firebase Storage에서 이미지 삭제
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+                imageRef.delete().addOnSuccessListener(aVoid -> {
+                    // 이미지 삭제 성공 로그
+                    Log.d("DiaryDetailActivity", "Image successfully deleted from Storage.");
+                }).addOnFailureListener(e -> {
+                    // 이미지 삭제 실패 로그
+                    Log.e("DiaryDetailActivity", "Failed to delete image from Storage.", e);
+                });
+            }
+
+            // Firebase Realtime Database에서 일기 삭제
+            FirebaseDatabase.getInstance().getReference().child("diaryEntries").child(userId).child(entryId).removeValue()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(DiaryDetailActivity.this, "일기가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        finish(); // 화면 종료
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(DiaryDetailActivity.this, "삭제 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            Toast.makeText(DiaryDetailActivity.this, "삭제할 일기가 없습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

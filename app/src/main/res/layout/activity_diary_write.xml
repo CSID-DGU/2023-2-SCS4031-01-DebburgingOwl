@@ -52,7 +52,7 @@
         android:layout_toLeftOf="@+id/writebtn"
         android:layout_alignTop="@+id/writebtn"
         android:background="@drawable/ic_image" />
-    <ImageView
+    <com.example.logintest.SquareImageView
         android:id="@+id/imagePreview"
         android:layout_width="match_parent"
         android:layout_height="200dp"
