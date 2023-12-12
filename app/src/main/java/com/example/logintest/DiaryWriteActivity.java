@@ -38,7 +38,8 @@ public class DiaryWriteActivity extends AppCompatActivity {
     private Button buttonDeleteImage;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static final int PICK_IMAGE_REQUEST = 1;
-    private EditText editTextTitle, editTextContent;
+    private EditText editTextTitle;
+    private NoCopyPasteEditText   editTextContent;
     private Button buttonWrite, buttonCancel;
     private String entryId; // 일기 ID를 저장할 변수
     private ImageView imagePreview;
