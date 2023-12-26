@@ -75,4 +75,4 @@ Run 'app' (Shift+F10)
 |---|---|---|
 |**BE**|**BE, FE**|**FE**|
 |**건설환경공학과**|**철학과**|**생명과학과**|
-|[@yunhyungNAM](https://github.com/yunhyungNAM)|[@Songmachi](https://github.com/Songmachi)|[@EunJeongmin](https://github.com/EunJeongmin)|
+|[@yunhyungNAM](https://github.com/yunhyungNAM)|[@Songmachi](https://github.com/Songmachi)|[@rmadmsjm](https://github.com/rmadmsjm)|
